@@ -1,0 +1,65 @@
+<footer class="bg-gray-100 dark:bg-gray-800 text-black dark:text-white pt-10">
+    <div class="max-w-8xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            <div>
+                <a href="/" class="flex items-center mb-6 space-x-3 rtl:space-x-reverse">
+                    <img src="myLogo.png" class="h-10" alt="Flowbite Logo">
+                    <span
+                        class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">ItsKashifWork</span>
+                </a>
+                <p class="text-black dark:text-gray-400 mb-6">Creating beautiful digital experiences with modern web
+                    technologies.
+                </p>
+                <div class="mt-10  text-black dark:text-white -translate-y-1/2 flex flex-row gap-5">
+                    <a href="#"
+                        class="w-10 h-10 flex items-center  justify-center border border-1 border-black dark:border-white rounded-full shadow-sm hover:shadow-md transition-shadow">
+                        <fa-icon [icon]="faGithub"></fa-icon>
+                    </a>
+                    <a href="#"
+                        class="w-10 h-10 flex items-center justify-center border border-1 border-black dark:border-white rounded-full shadow-sm hover:shadow-md transition-shadow">
+                        <fa-icon [icon]="faLinkedin"></fa-icon>
+                    </a>
+                    <!-- <a href="#"
+                        class="w-10 h-10 flex items-center justify-center border border-1 border-black dark:border-white rounded-full shadow-sm hover:shadow-md transition-shadow">
+                        <fa-icon [icon]="faTwitter"></fa-icon>
+                    </a> -->
+                </div>
+                <div class="flex gap-4 text-gray-300 dark:text-white">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <!-- <a href="#"><i class="fab fa-twitter"></i></a> -->
+                </div>
+            </div>
+            <div class="text-black dark:text-white">
+                <h3 class="text-lg font-semibold mb-6">Quick Links</h3>
+                <ul class="space-y-4">
+                    <li><a href="#" [routerLink]="['/HOME']">Home</a></li>
+                    <li><a href="#projects" [routerLink]="['/PROJECTS']">Projects</a></li>
+                    <li><a href="javascript:void(0);" (click)="scrollToContact('contact')">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-6">Services</h3>
+                <ul class="space-y-4">
+                    <li>Web Development</li>
+                    <li>Graphic Designing</li>
+                    <li>Video Editing</li>
+                </ul>
+            </div>
+            <!-- <div>
+                <h3 class="text-lg font-semibold mb-6">Newsletter</h3>
+                <p class="text-gray-400 mb-4">Subscribe to receive updates and news about my latest projects.</p>
+                <form class="space-y-4">
+                    <input type="email"
+                        class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-custom focus:border-custom"
+                        placeholder="Your email" />
+                    <button type="submit"
+                        class="!rounded-button w-full bg-[#4070f4] text-white py-2 hover:bg-[#4070f4]/90">Subscribe</button>
+                </form>
+            </div> -->
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-900 border-t border-gray-800 mt-3 py-3 text-center text-black dark:text-gray-400">
+        <p>© 2024 All rights reserved.</p>
+    </div>
+</footer>

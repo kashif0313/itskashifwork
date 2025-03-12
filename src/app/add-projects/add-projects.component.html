@@ -1,0 +1,96 @@
+<section class="bg-white dark:bg-gray-900 pt-24">
+    <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+
+        <!-- Success & Error Messages -->
+        <div *ngIf="successMessage" class="bg-green-500 text-white p-3 rounded-lg mb-4 text-center">
+            {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="bg-red-500 text-white p-3 rounded-lg mb-4 text-center">
+            {{ errorMessage }}
+        </div>
+
+        <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Add a New Project</h2>
+        <form (ngSubmit)="onSubmit()">
+            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+
+                <!-- Title Field -->
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                    <input type="text" [(ngModel)]="project.title" name="title"
+                        [ngClass]="{'border-red-500': isTitleInvalid}"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Project title">
+                    <p *ngIf="isTitleInvalid" class="text-red-500 text-sm mt-1">⚠️ Title is required.</p>
+                </div>
+
+                <!-- Description Field -->
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                    <textarea [(ngModel)]="project.description" name="description"
+                        [ngClass]="{'border-red-500': isDescriptionInvalid}"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Write project description"></textarea>
+                    <p *ngIf="isDescriptionInvalid" class="text-red-500 text-sm mt-1">⚠️ Description is required.</p>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Image</label>
+                    <input type="file" (change)="onFileSelected($event)" accept="image/*"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+
+                    <!-- Preview Image -->
+                    <div *ngIf="projectImagePreview" class="mt-2">
+                        <img [src]="projectImagePreview" alt="Image preview" class="w-32 h-32 object-cover rounded-lg">
+                    </div>
+
+                    <p *ngIf="isImageUrlInvalid" class="text-red-500 text-sm mt-1">⚠️ Image is required.</p>
+                </div>
+
+
+                <!-- Web Link -->
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Web Link</label>
+                    <input type="text" [(ngModel)]="project.webLink" name="webLink"
+                        [ngClass]="{'border-red-500': isWebLinkInvalid}"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Website URL">
+                    <p *ngIf="isWebLinkInvalid" class="text-red-500 text-sm mt-1">⚠️ Web link is required.</p>
+                </div>
+
+                <!-- GitHub Link -->
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">GitHub Link</label>
+                    <input type="text" [(ngModel)]="project.githubLink" name="githubLink"
+                        [ngClass]="{'border-red-500': isGithubLinkInvalid}"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="GitHub repository link">
+                    <p *ngIf="isGithubLinkInvalid" class="text-red-500 text-sm mt-1">⚠️ GitHub link is required.</p>
+                </div>
+
+                <!-- Type Selection -->
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Project Type</label>
+                    <select [(ngModel)]="project.type" name="type" [ngClass]="{'border-red-500': isTypeInvalid}"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option value="" disabled selected>Select type</option>
+                        <option value="web">Web</option>
+                        <option value="graphic">Graphic</option>
+                    </select>
+                    <p *ngIf="isTypeInvalid" class="text-red-500 text-sm mt-1">⚠️ Type is required.</p>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SecretKey</label>
+                    <input type="text" [(ngModel)]="inputKey" name="secretKey"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+            </div>
+
+            <button type="submit"
+                class="px-5 py-2.5 mt-4 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                Submit Project
+            </button>
+        </form>
+    </div>
+</section>

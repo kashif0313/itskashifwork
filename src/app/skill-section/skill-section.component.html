@@ -1,0 +1,33 @@
+<section id="skills" class="px-8 py-6 bg-gray-100 dark:bg-gray-800">
+    <div class="py-10">
+        <h2 class="text-3xl font-bold text-black dark:text-white mb-12 text-center">
+            Skills &amp; Technologies
+        </h2>
+        <div class="mt-0">
+            <div class="flex flex-wrap gap-6 justify-center">
+                <!-- Loop through skills array -->
+                <div class="card bg-white dark:bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col"
+                    *ngFor="let skill of skills" #card
+                    [ngClass]="{ 'w-full h-auto': isSmallScreen, 'h-[300px]': !isSmallScreen }">
+                    <h3 class="text-2xl font-bold text-black dark:text-white mb-3 text-center">{{ skill.title }}</h3>
+                    <p class="text-black dark:text-gray-300 mb-4 text-center">{{ skill.detailDescription }}</p>
+                    <div class="flex flex-wrap gap-6 justify-center">
+                        <!-- Loop through skill details -->
+                        <div class="bg-gray-200/50 p-4 rounded-lg text-center hover:shadow-2xl dark:hover:bg-gray-400 transition-all flex flex-col items-center"
+                            *ngFor="let detail of skill.details" style="width: 100px;">
+                            <ng-container *ngIf="detail.icon">
+                                <img [src]="detail.icon" height="50px" width="50px" class="mb-2" />
+                            </ng-container>
+                            <ng-container *ngIf="detail.svg">
+                                <div [innerHTML]="detail.svg" class="text-3xl text-[#4070f4] mb-2"></div>
+                            </ng-container>
+                            <p class="text-black dark:text-white text-sm">{{ detail.label }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>

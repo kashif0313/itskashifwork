@@ -1,0 +1,45 @@
+<div [ngClass]="{'flex-col': verticalShow, 'flex-row': !verticalShow, 'justify-center': !verticalShow, 'align-center': verticalShow} "
+    class="left-10 ml-6 top-1/2 transform -translate-y-1/2 text-black dark:text-white flex flex-col gap-10">
+    <div class="relative group">
+        <!-- Icon -->
+        <a href="https://github.com/kashif0313"
+            class="w-10 h-10 flex items-center justify-center border border-1 border-black dark:border-white rounded-full shadow-sm hover:shadow-md transition-shadow z-10 relative bg-gray-100 dark:bg-gray-700">
+            <fa-icon [icon]="faGithub" class="text-xl"></fa-icon>
+        </a>
+        <!-- Expanding Rectangle -->
+        <div
+            class="absolute top-0 left-0 h-10 w-10 rounded-full group-hover:w-48 bg-gray-100 dark:bg-gray-700 transition-all duration-300 z-0">
+        </div>
+        <!-- Username -->
+        <div
+            class="absolute left-12 top-1/2 transform -translate-y-1/2 text-black dark:text-white px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            {{githubUsername}}
+        </div>
+    </div>
+    <div class="relative group">
+        <a href="#"
+            class="w-10 h-10 flex items-center justify-center border border-1 border-black dark:border-white rounded-full shadow-sm hover:shadow-md transition-shadow z-10 relative bg-gray-100 dark:bg-gray-700">
+            <fa-icon [icon]="faLinkedin" class="text-xl"></fa-icon>
+        </a>
+        <div
+            class="absolute top-0 left-0 h-10 w-10 rounded-full group-hover:w-48 bg-gray-100 dark:bg-gray-700 transition-all duration-300 z-0">
+        </div>
+        <div
+            class="absolute left-12 top-1/2 transform -translate-y-1/2 text-black dark:text-white px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            {{linkedinUsername}}
+        </div>
+    </div>
+    <div class="relative group">
+        <a href="#"
+            class="w-10 h-10 flex items-center justify-center border border-1 border-black dark:border-white rounded-full shadow-sm hover:shadow-md transition-shadow z-10 relative bg-gray-100 dark:bg-gray-700">
+            <fa-icon [icon]="faTwitter" class="text-xl"></fa-icon>
+        </a>
+        <div
+            class="absolute top-0 left-0 h-10 w-10 rounded-full group-hover:w-48 bg-gray-100 dark:bg-gray-700 transition-all duration-300 z-0">
+        </div>
+        <div
+            class="absolute left-12 top-1/2 transform -translate-y-1/2 text-black dark:text-white px-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            {{linkedinUsername}}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+/* Dropdown animation */
+.opacity-0 {
+  opacity: 0;
+}
+.opacity-100 {
+  opacity: 1;
+}
+.max-h-0 {
+  max-height: 0;
+  overflow: hidden;
+}
+.max-h-screen {
+  max-height: 100vh;
+}
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+.card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 1s ease-in-out;
+}
+
+.card.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}

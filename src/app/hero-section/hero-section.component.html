@@ -1,0 +1,39 @@
+<section
+    class="relative h-full lg:h-screen flex items-center pt-36  px-4 bg-white dark:bg-gray-900 text-white overflow-hidden">
+    <!-- Background Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 -z-10"></div>
+
+    <!-- Social Media Links -->
+    <app-social-contact *ngIf="bigScreen" [verticalShow]=true></app-social-contact>
+
+
+    <!-- Content Section -->
+    <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ">
+        <!-- Hero Image -->
+        <div class="imageContentContainer flex items-center justify-center animate-fade-in-left ">
+            <div class="w-1/2 aspect-[1/1] rounded-lg flex items-center justify-center overflow-hidden">
+                <img src="/profileImage.png" alt="Hero Image" class="w-full h-full object-cover" />
+            </div>
+        </div>
+        <!-- Hero Text -->
+        <div class="text-center animate-fade-in-up ">
+            <h1 class="text-2xl lg:text-4xl font-extrabold mb-6 text-black dark:text-gray-300 ">
+                Hi, I'm Kashif Imran<br />
+                <span class="text-blue-500">
+                    <span id="typewriter" class="inline-block"></span>
+                </span>
+                <!-- <span class="text-blue-500">Full-stack Developer</span> -->
+            </h1>
+            <p class="text-lg text-black dark:text-gray-300 mb-8  leading-relaxed ">
+                Passionate about web development with a strong foundation in creating dynamic and user-friendly
+                websites. While my primary focus is on web technologies, I also bring creative expertise in video
+                editing and graphic designing, allowing me to craft visually appealing and engaging digital experiences.
+            </p>
+            <div class="flex gap-4 justify-center">
+                <app-button [secondaryBtn]="true" (click)="scrollToProjects()">View My Work</app-button>
+                <app-button [primaryBtn]="true" (click)="scrollToContacts()">Contact Me</app-button>
+            </div>
+        </div>
+        <app-social-contact *ngIf="!bigScreen" [verticalShow]=false></app-social-contact>
+    </div>
+</section>

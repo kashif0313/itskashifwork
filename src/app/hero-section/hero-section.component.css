@@ -1,0 +1,32 @@
+.imageContentContainer {
+  animation: myImage 2s ease-in-out infinite;
+}
+@keyframes myImage {
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-20px);
+  }
+  100% {
+    transform: translatey(0px);
+  }
+}
+
+#typewriter {
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid currentColor;
+  animation: blink-cursor 0.7s steps(2) infinite;
+}
+
+@keyframes blink-cursor {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: currentColor;
+  }
+}

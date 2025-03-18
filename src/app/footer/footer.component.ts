@@ -26,7 +26,7 @@ export class FooterComponent {
       if (element) {
         (element as HTMLElement).scrollIntoView({ behavior: 'smooth' });
       } else {
-        this.router.navigate(['/HOME']).then(() => {
+        this.router.navigate(['/home']).then(() => {
           // Listen for the navigation to complete
           this.router.events.subscribe((event) => {
             const contact_element = document.querySelector('#contactForm');

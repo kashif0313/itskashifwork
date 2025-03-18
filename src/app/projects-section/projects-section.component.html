@@ -30,18 +30,18 @@
             <!-- Actual Projects List -->
             <ng-template #projectList>
                 <div *ngFor="let project of projects"
-                    class="projCard w-80 sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl border dark:border-gray-200 border-gray-700 p-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                    <div class="p-0 md:p-4 lg:p-6">
+                    class="projCard w-50 sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl border dark:border-gray-200 border-gray-700 p-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                    <div class="pt-2 pb-2">
                         <div class="flex justify-center w-full h-40 object-contain mb-4">
                             <img [src]="project.imageUrl" alt="Project" class="rounded-xl" />
                         </div>
                         <div class="text-center text-black dark:text-white flex-grow">
                             <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
-                            <p class="mb-4">{{ project.description }}</p>
+                            <p class="mb-4 w-full break-words whitespace-pre-line">{{ project.description }}</p>
                         </div>
                         <div class="flex gap-3 w-full justify-center items-center mt-auto">
-                            <app-button *ngIf="project.link" [secondaryBtn]="true"
-                                (click)="openPreviewLink(project.link)">View Project</app-button>
+                            <app-button *ngIf="project.webLink" [secondaryBtn]="true"
+                                (click)="openPreviewLink(project.webLink)">View Project</app-button>
                             <app-button *ngIf="project.githubLink" [secondaryBtn]="true"
                                 (click)="openGithubLink(project.githubLink)">View Code</app-button>
                         </div>

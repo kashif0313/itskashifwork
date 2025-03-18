@@ -45,7 +45,7 @@ export class ContactSectionComponent {
       )
       .then(
         () => {
-          this.router.navigate(['/HOME']).then(() => {
+          this.router.navigate(['/home']).then(() => {
             this.showSuccess(`Message Sended Successfully`);
             window.location.reload();
           });

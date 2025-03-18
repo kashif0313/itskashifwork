@@ -21,10 +21,9 @@ export class ProjectsSectionComponent implements OnInit {
   constructor(private helperFunction: helperFunctions) {}
   async ngOnInit() {
     this.loading = true; // Start loading
-    this.projects = (await this.helperFunction.getProjects()).slice(0, 8);
+    this.projects = await this.helperFunction.getProjects(8);
     this.loading = false; // Stop loading after fetching data
   }
-
   openPreviewLink(link: string) {
     if (link) {
       window.open(link, '_blank');

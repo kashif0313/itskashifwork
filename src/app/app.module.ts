@@ -18,7 +18,6 @@ import { ProjectsPageComponent } from './projects-page/projects-page.component';
 import { ProjectsSectionComponent } from './projects-section/projects-section.component';
 import { SkillSectionComponent } from './skill-section/skill-section.component';
 import { SocialContactComponent } from './social-contact/social-contact.component';
-import { helperFunctions } from './helpers/helperFunctions';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { environment } from '../environments/environment.development';
 import { AngularFireModule } from '@angular/fire/compat';
@@ -38,6 +37,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { isPlatformBrowser } from '@angular/common';
 import { AddProjectsComponent } from './add-projects/add-projects.component';
 import { FormsModule } from '@angular/forms';
+import { helperFunctions } from './helpers/helperFunctions';
 
 @NgModule({
   declarations: [
@@ -68,11 +68,6 @@ import { FormsModule } from '@angular/forms';
     helperFunctions,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => {
-      // const platformId = inject(PLATFORM_ID);
-      // if (!isPlatformBrowser(platformId)) {
-      //   return {} as Firestore; // Prevent SSR crash by returning an empty object
-      // }
-
       const firestore = getFirestore(); // Get Firestore instance only in browser
       if (environment.useEmulators) {
         connectFirestoreEmulator(firestore, environment.localhostIp, 8080);

@@ -35,16 +35,12 @@
 
                 <!-- Image Upload -->
                 <div class="sm:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Upload Image</label>
-                    <input type="file" (change)="onFileSelected($event)" accept="image/*"
-                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-
-                    <!-- Preview Image -->
-                    <div *ngIf="projectImagePreview" class="mt-2">
-                        <img [src]="projectImagePreview" alt="Image preview" class="w-32 h-32 object-cover rounded-lg">
-                    </div>
-
-                    <p *ngIf="isImageUrlInvalid" class="text-red-500 text-sm mt-1">⚠️ Image is required.</p>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Image Link</label>
+                    <input type="text" [(ngModel)]="project.imageUrl" name="webLink"
+                        [ngClass]="{'border-red-500': isWebLinkInvalid}"
+                        class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Website URL">
+                    <p *ngIf="isWebLinkInvalid" class="text-red-500 text-sm mt-1">⚠️ Image link is required.</p>
                 </div>
 
 
@@ -55,7 +51,6 @@
                         [ngClass]="{'border-red-500': isWebLinkInvalid}"
                         class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         placeholder="Website URL">
-                    <p *ngIf="isWebLinkInvalid" class="text-red-500 text-sm mt-1">⚠️ Web link is required.</p>
                 </div>
 
                 <!-- GitHub Link -->
@@ -65,7 +60,6 @@
                         [ngClass]="{'border-red-500': isGithubLinkInvalid}"
                         class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         placeholder="GitHub repository link">
-                    <p *ngIf="isGithubLinkInvalid" class="text-red-500 text-sm mt-1">⚠️ GitHub link is required.</p>
                 </div>
 
                 <!-- Type Selection -->

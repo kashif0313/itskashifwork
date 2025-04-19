@@ -24,7 +24,7 @@ export class HeroSectionComponent implements AfterViewInit, OnInit {
     @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
-  private words = ['Flutter Developer'];
+  private words = ['Website Developer', 'Graphic Designer', 'Video Editor'];
   private typewriterElement: HTMLElement | null = null;
   bigScreen: boolean = false;
 

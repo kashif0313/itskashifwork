@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrl: './contact-section.component.css',
 })
 export class ContactSectionComponent {
-  contactEmail: string = 'ali.usama578@gmail.com';
+  contactEmail: string = 'kashif.imran0313@gmail.com';
   constructor(private router: Router) {}
 
   toastMixin = Swal.mixin({

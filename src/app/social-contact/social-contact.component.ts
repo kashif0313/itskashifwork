@@ -17,8 +17,8 @@ export class SocialContactComponent {
   faLinkedin = faLinkedinIn;
   faTwitter = faFacebook;
 
-  githubUsername = 'Ali Usama';
-  linkedinUsername = 'Ali Usama';
+  githubUsername = 'kashif0313';
+  linkedinUsername = 'Kashif';
   facebookUsername = 'ItsKashifWork';
 
   @Input() verticalShow: boolean = false;

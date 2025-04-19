@@ -17,6 +17,8 @@ import { helperFunctions } from '../helpers/helperFunctions';
 export class ProjectsSectionComponent implements OnInit {
   projects: any = [];
   loading: boolean = true; // Track loading state
+  openDetails: boolean = false;
+  openProjectDetail: any;
 
   constructor(private helperFunction: helperFunctions) {}
   async ngOnInit() {
@@ -38,5 +40,13 @@ export class ProjectsSectionComponent implements OnInit {
     if (link) {
       window.open(link, '_blank');
     }
+  }
+  openDetailsModal(project: any) {
+    this.openDetails = true;
+    this.openProjectDetail = project;
+  }
+
+  closeDetailsModal() {
+    this.openDetails = false;
   }
 }

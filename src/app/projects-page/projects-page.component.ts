@@ -12,6 +12,8 @@ export class ProjectsPageComponent implements OnInit {
   projects: any = [];
   loading: boolean = true; // Track loading state
   loadingMoreProjects = false;
+  openDetails: boolean = false;
+  openProjectDetail: any;
 
   constructor(private helperFunction: helperFunctions) {}
   async ngOnInit() {
@@ -55,5 +57,13 @@ export class ProjectsPageComponent implements OnInit {
     if (scrollHeight - scrollTop - clientHeight < 200) {
       this.loadMoreProjects();
     }
+  }
+  openDetailsModal(project: any) {
+    this.openDetails = true;
+    this.openProjectDetail = project;
+  }
+
+  closeDetailsModal() {
+    this.openDetails = false;
   }
 }

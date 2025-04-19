@@ -38,6 +38,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { AddProjectsComponent } from './add-projects/add-projects.component';
 import { FormsModule } from '@angular/forms';
 import { helperFunctions } from './helpers/helperFunctions';
+import { ProjectDetailsComponent } from './project-details/project-details.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { helperFunctions } from './helpers/helperFunctions';
     ClientsComponent,
     AddClientReviewComponent,
     AddProjectsComponent,
+    ProjectDetailsComponent,
   ],
   imports: [
     BrowserModule,

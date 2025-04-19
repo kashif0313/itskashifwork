@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { faMailchimp } from '@fortawesome/free-brands-svg-icons';
 
 import Swal from 'sweetalert2';
 import emailjs, { type EmailJSResponseStatus } from '@emailjs/browser';
@@ -13,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrl: './contact-section.component.css',
 })
 export class ContactSectionComponent {
-  contactEmail: string = 'kashif.imran0313@gmail.com';
+  contactEmail: string = 'ali.usama578@gmail.com';
   constructor(private router: Router) {}
 
   toastMixin = Swal.mixin({

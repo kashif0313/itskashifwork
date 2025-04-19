@@ -42,7 +42,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   toggleNavbar() {
     this.isNavbarOpen = !this.isNavbarOpen;
-    console.log('click header');
   }
   scrollToContact(type: any) {
     if (type == 'contact') {

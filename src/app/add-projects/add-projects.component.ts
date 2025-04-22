@@ -26,7 +26,7 @@ export class AddProjectsComponent implements OnInit {
     timestamp: serverTimestamp(), // Firebase server timestamp
   };
 
-  secretKey = 'k@$hif0313';
+  secretKey = 'us@ma0313@li';
   inputKey: any;
   ngOnInit(): void {}
   successMessage: string = '';

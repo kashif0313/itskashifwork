@@ -111,7 +111,7 @@ export class helperFunctions {
   }
 
   applyFilter(type: string) {
-    if (type === 'web' || type === 'graphics') {
+    if (type === 'web' || type === 'graphic') {
       return this.allProjects.filter((project: any) => project.type === type);
     } else {
       return [...this.allProjects]; // Reset to show all projects

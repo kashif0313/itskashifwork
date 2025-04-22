@@ -35,11 +35,11 @@ export class ContactSectionComponent {
     this.showLoading('Sending Email', 'Please wait sending email...');
     emailjs
       .sendForm(
-        'service_b124c9s',
-        'template_q9mox5h',
+        'service_pxvaeod',
+        'template_3xqegji',
         e.target as HTMLFormElement,
         {
-          publicKey: '3-fQaflqnq8rizVh-',
+          publicKey: 'wDAiBvee_YZf7-n7QbfuX',
         }
       )
       .then(

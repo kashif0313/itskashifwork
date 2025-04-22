@@ -33,7 +33,9 @@ export class ProjectsSectionComponent implements OnInit {
   }
 
   filterProjects(type: string) {
+    console.log('filter type == ', type);
     this.projects = this.helperFunction.applyFilter(type);
+    console.log('proj ==', this.projects);
   }
 
   openGithubLink(link: string) {

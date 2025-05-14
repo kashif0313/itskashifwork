@@ -20,9 +20,8 @@ export class AddProjectsComponent implements OnInit {
     title: '',
     description: '',
     imageUrl: '',
-    webLink: '',
-    githubLink: '',
-    type: '',
+    androidLink: '',
+    iosLink: '',
     timestamp: serverTimestamp(), // Firebase server timestamp
   };
 
@@ -45,10 +44,8 @@ export class AddProjectsComponent implements OnInit {
   async onSubmit() {
     this.isTitleInvalid = !this.project.title.trim();
     this.isDescriptionInvalid = !this.project.description.trim();
-    this.isWebLinkInvalid = !this.project.webLink.trim();
-    this.isGithubLinkInvalid = !this.project.githubLink.trim();
-    this.isTypeInvalid = !this.project.type.trim();
-
+    this.isWebLinkInvalid = !this.project.androidLink.trim();
+    this.isGithubLinkInvalid = !this.project.iosLink.trim();
     if (
       this.isTitleInvalid ||
       this.isDescriptionInvalid ||
@@ -65,6 +62,8 @@ export class AddProjectsComponent implements OnInit {
 
     try {
       const projectCollection = collection(this.firestore, 'Projects');
+      this.project.imageUrl =
+        'https://ali-usama.infy.uk/uploads/' + this.project.imageUrl;
       await addDoc(projectCollection, this.project);
 
       this.successMessage = '✅ Project added successfully!';
@@ -74,9 +73,8 @@ export class AddProjectsComponent implements OnInit {
         title: '',
         description: '',
         imageUrl: '',
-        webLink: '',
-        githubLink: '',
-        type: '',
+        androidLink: '',
+        iosLink: '',
         timestamp: serverTimestamp(),
       };
 

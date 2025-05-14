@@ -46,24 +46,24 @@
 
                 <!-- Web Link -->
                 <div class="sm:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Web Link</label>
-                    <input type="text" [(ngModel)]="project.webLink" name="webLink"
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Android Link</label>
+                    <input type="text" [(ngModel)]="project.androidLink" name="webLink"
                         [ngClass]="{'border-red-500': isWebLinkInvalid}"
                         class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        placeholder="Website URL">
+                        placeholder="Android project Link">
                 </div>
 
                 <!-- GitHub Link -->
                 <div class="sm:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">GitHub Link</label>
-                    <input type="text" [(ngModel)]="project.githubLink" name="githubLink"
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">IOS Link</label>
+                    <input type="text" [(ngModel)]="project.iosLink" name="githubLink"
                         [ngClass]="{'border-red-500': isGithubLinkInvalid}"
                         class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        placeholder="GitHub repository link">
+                        placeholder="IOS project link">
                 </div>
 
                 <!-- Type Selection -->
-                <div class="sm:col-span-2">
+                <!-- <div class="sm:col-span-2">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Project Type</label>
                     <select [(ngModel)]="project.type" name="type" [ngClass]="{'border-red-500': isTypeInvalid}"
                         class="form-control bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -72,7 +72,7 @@
                         <option value="graphic">Graphic</option>
                     </select>
                     <p *ngIf="isTypeInvalid" class="text-red-500 text-sm mt-1">⚠️ Type is required.</p>
-                </div>
+                </div> -->
 
                 <div class="sm:col-span-2">
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">SecretKey</label>

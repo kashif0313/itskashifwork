@@ -101,7 +101,6 @@ export class helperFunctions {
         } else {
           this.allProjects = projects; // Initial load
         }
-
         return projects;
       } catch (error) {
         console.error('Error fetching projects:', error);

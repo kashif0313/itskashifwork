@@ -22,13 +22,13 @@
 
         <!-- Buttons -->
         <div class="flex justify-center gap-4">
-            <a *ngIf="projectDetails.webLink" (click)="openPreviewLink(projectDetails.webLink)" target="_blank"
+            <a *ngIf="projectDetails.androidLink" (click)="openPreviewLink(projectDetails.androidLink)" target="_blank"
                 class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
                 View Project
             </a>
-            <a *ngIf="projectDetails.githubLink" (click)="openGithubLink(projectDetails.githubLink)" target="_blank"
+            <a *ngIf="projectDetails.iosLink" (click)="openGithubLink(projectDetails.iosLink)" target="_blank"
                 class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
-                View Code
+                View project
             </a>
         </div>
     </div>

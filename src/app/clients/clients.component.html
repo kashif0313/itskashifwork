@@ -20,7 +20,7 @@
         [style.transform]="'translateX(' + (-activeIndex * 100) + '%)'">
         <div class="flex-shrink-0 w-full" *ngFor="let client of clients">
             <figure class="w-full flex flex-col items-center justify-center text-center">
-                <div class="rounded-xl bg-gray-100 dark:bg-gray-800 px-20 py-6 mx-10">
+                <div class="rounded-xl bg-gray-100 dark:bg-gray-800 px-5 md:px-10 lg:px-20 py-6 mx-10">
                     <svg class="h-12 mx-auto mb-3 text-gray-400 dark:text-gray-600" viewBox="0 0 24 27" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -34,7 +34,7 @@
                     </blockquote>
                     <figcaption class="flex items-center justify-center mt-6 space-x-3">
                         <div class="flex items-center divide-x-2 divide-gray-500 dark:divide-gray-700">
-                            <div class="pr-3 font-medium text-gray-900 dark:text-white">
+                            <div class="pr-3 font-bold  text-gray-900 dark:text-white">
                                 {{ client.name }}
                             </div>
                         </div>

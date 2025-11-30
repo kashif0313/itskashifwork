@@ -5,11 +5,13 @@ import {
   Component,
   ElementRef,
   Inject,
+  Input,
   OnInit,
   PLATFORM_ID,
   ViewChild,
 } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header',
@@ -18,87 +20,49 @@ import { Router, NavigationEnd } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
-  theme: string | null = 'light'; // Default to light theme
-  isDarkMode: boolean = false; // Track the theme mode
-  isNavbarOpen = false;
+export class HeaderComponent {
+  constructor(private router: Router) {}
+  menuIcon = faBars;
+  isMenuOpen = false;
+  @Input() ts: any = {
+    headerBg: 'bg-gray-900',
+    accentColor: 'text-cyan-400',
+    textPrimary: 'text-white',
+  };
+  sections = [
+    { id: 'home', title: 'Home' },
+    { id: 'skills', title: 'Skills' },
+    { id: 'projects', title: 'Projects' },
+    { id: 'contact', title: 'Contact' },
+    { id: 'testimonials', title: 'Testimonials' },
+  ];
 
-  @ViewChild('contactForm', { static: false }) contactForm!: ElementRef;
+  scrollTo(sectionId: string) {
+    const isHome = this.router.url === '/' || this.router.url === '/home';
 
-  constructor(
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: any,
-    private cdr: ChangeDetectorRef
-  ) {}
-
-  ngOnInit(): void {
-    this.applySavedTheme();
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.isNavbarOpen = false;
-      }
-    });
-  }
-
-  toggleNavbar() {
-    this.isNavbarOpen = !this.isNavbarOpen;
-  }
-  scrollToContact(type: any) {
-    if (type == 'contact') {
-      const element = document.querySelector('#contactForm');
+    if (isHome) {
+      // Already on home → scroll directly
+      const element = document.getElementById(sectionId);
       if (element) {
-        (element as HTMLElement).scrollIntoView({ behavior: 'smooth' });
-        this.isNavbarOpen = false;
-      } else {
-        this.router.navigate(['/home']).then(() => {
-          // Listen for the navigation to complete
-          this.router.events.subscribe((event) => {
-            const contact_element = document.querySelector('#contactForm');
-            if (contact_element) {
-              this.isNavbarOpen = false;
-              (contact_element as HTMLElement).scrollIntoView({
-                behavior: 'smooth',
-              });
-            }
-          });
-        });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+    } else {
+      // Not on home → navigate first, then scroll
+      this.router.navigate(['/']).then(() => {
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 300); // delay for DOM to load
+      });
     }
   }
-
-  ngAfterViewInit(): void {
-    this.applySavedTheme();
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
-
-  toggleTheme(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const htmlElement = document.documentElement;
-      this.isDarkMode = !this.isDarkMode;
-
-      if (this.isDarkMode) {
-        htmlElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        htmlElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
-
-      this.cdr.detectChanges(); // Force Angular to update UI
-    }
-  }
-
-  applySavedTheme(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const savedTheme = localStorage.getItem('theme');
-      const htmlElement = document.documentElement; // Get <html> tag
-
-      if (savedTheme === 'dark') {
-        this.isDarkMode = true;
-        htmlElement.classList.add('dark');
-      } else {
-        this.isDarkMode = false;
-        htmlElement.classList.remove('dark');
-      }
-    }
+  onMobileClick(sectionId: string) {
+    this.scrollTo(sectionId);
+    this.isMenuOpen = false;
   }
 }

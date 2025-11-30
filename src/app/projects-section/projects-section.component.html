@@ -1,62 +1,93 @@
-<section id="projects" class="py-20 bg-white dark:bg-gray-900">
-    <div class="w-full md:mx-auto ">
-        <h2 class="text-3xl font-bold text-black dark:text-white mb-12 text-center">
-            Selected Projects
+<section id="projects" class="py-20">
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-3">
+            Featured <span class="primary-color">Projects</span>
         </h2>
+        <p class="text-gray-500">A blend of development and design creativity.</p>
+    </div>
 
-        <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <app-button [secondaryBtn]=true (click)="filterProjects('all')">All</app-button>
-            <app-button [secondaryBtn]=true (click)="filterProjects('web')">Web Apps</app-button>
-            <app-button [secondaryBtn]=true (click)="filterProjects('graphics')">Graphic Designs</app-button>
-        </div>
+    <!-- Filter Buttons -->
+    <div class="flex justify-center space-x-4 mb-12">
+        <app-button *ngFor="let category of ['All','Web Apps','Graphic Design']"
+            [secondaryBtn]="activeFilter !== category" (click)="filterProjects(category)">
+            {{ category }}
+        </app-button>
+    </div>
 
-        <div class="flex flex-wrap justify-center gap-5">
-            <!-- Show Skeleton Loader when loading -->
-            <ng-container *ngIf="loading; else projectList">
-                <div *ngFor="let skeleton of [1,2,3,4,5]"
-                    class="w-80 sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl border border-gray-300 dark:border-gray-700 p-2 shadow-xl animate-pulse">
-                    <div class="p-0 md:p-4 lg:p-6">
-                        <div class="w-full h-40 bg-gray-300 dark:bg-gray-700 rounded-xl mb-4"></div>
-                        <div class="h-6 bg-gray-300 dark:bg-gray-700 w-3/4 rounded-md mb-2"></div>
-                        <div class="h-4 bg-gray-300 dark:bg-gray-700 w-full rounded-md mb-4"></div>
-                        <div class="flex gap-3 w-full justify-center items-center mt-auto">
-                            <div class="h-8 w-24 bg-gray-300 dark:bg-gray-700 rounded-md"></div>
-                            <div class="h-8 w-24 bg-gray-300 dark:bg-gray-700 rounded-md"></div>
-                        </div>
+    <!-- Projects Grid -->
+    <div class="flex flex-wrap justify-center gap-5">
+        <!-- Loading Skeleton -->
+        <ng-container *ngIf="loading; else projectList">
+            <div *ngFor="let skeleton of [1,2,3,4,5]"
+                class="w-80 sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl border border-gray-300 dark:border-gray-700 p-2 shadow-xl animate-pulse">
+                <div class="p-0 md:p-4 lg:p-6">
+                    <div class="w-full h-40 bg-gray-300 dark:bg-gray-700 rounded-xl mb-4"></div>
+                    <div class="h-6 bg-gray-300 dark:bg-gray-700 w-3/4 rounded-md mb-2"></div>
+                    <div class="h-4 bg-gray-300 dark:bg-gray-700 w-full rounded-md mb-4"></div>
+                    <div class="flex gap-3 w-full justify-center items-center mt-auto">
+                        <div class="h-8 w-24 bg-gray-300 dark:bg-gray-700 rounded-md"></div>
+                        <div class="h-8 w-24 bg-gray-300 dark:bg-gray-700 rounded-md"></div>
                     </div>
                 </div>
-            </ng-container>
+            </div>
+        </ng-container>
 
-            <!-- Actual Projects List -->
-            <ng-template #projectList>
-                <div *ngFor="let project of projects"
-                    class="projCard w-70 sm:w-1/3 md:w-1/4 lg:w-1/5 rounded-xl border dark:border-gray-200 border-gray-700 p-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                    <div class="pt-2 pb-2">
-                        <div class="flex justify-center w-full h-40 object-contain mb-4"
-                            (click)="openDetailsModal(project)">
-                            <img [src]="project.imageUrl" alt="Project" class="rounded-xl" />
-                        </div>
-                        <div class="text-center text-black dark:text-white flex-grow"
-                            (click)="openDetailsModal(project)">
-                            <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
-                            <p class="mb-4 w-full break-words whitespace-pre-line line-clamp-2">
-                                {{ project.description }}
-                            </p>
+        <!-- Actual Projects -->
+        <ng-template #projectList>
+            <div *ngFor="let project of filteredProjects"
+                class="projCard group max-w-100 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
 
+                <div class="rounded-xl primary-bg_color h-130">
+
+                    <!-- Image Wrapper -->
+                    <div class="relative h-[239.19px] w-full flex justify-center border-b border-gray-500 object-contain mb-4 overflow-hidden rounded-t-xl"
+                        (click)="openDetailsModal(project)">
+
+                        <!-- Skeleton Loader -->
+                        <div *ngIf="!imageLoaded[project.id]"
+                            class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-700 animate-pulse">
+                            <div class="w-full h-full bg-gray-300 dark:bg-gray-600 rounded-xl"></div>
                         </div>
-                        <div class="flex  gap-3 justify-center items-center">
-                            <app-button *ngIf="project.webLink" [secondaryBtn]="true"
-                                (click)="openPreviewLink(project.webLink)">View Project</app-button>
-                            <app-button *ngIf="project.githubLink" [secondaryBtn]="true"
-                                (click)="openGithubLink(project.githubLink)">View Code</app-button>
+
+                        <!-- Image -->
+                        <img [src]="project.imageUrl" loading="lazy" alt="Project" class="rounded-t-2xl w-full h-full object-cover transition-transform duration-500 ease-in-out 
+               group-hover:scale-110 lazy-img" (load)="onImageLoad($event, project.id)" />
+
+                    </div>
+
+
+                    <div class="text-left flex-grow px-5" (click)="openDetailsModal(project)">
+                        <span class="inline-block px-3 py-1 mb-2 rounded-full text-xs font-semibold
+        bg-blue-600/20 primary-badge-text_color border border-blue-600/30">
+                            {{ getProjectType(project.type) }}
+                        </span>
+                        <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
+                        <p class="mb-4 w-full break-words whitespace-pre-line line-clamp-2">
+                            {{ project.description }}
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-3" *ngIf="(project?.techStack ?? []).length > 0">
+
+                            Tech Stack :
+                            <span *ngFor="let tech of project.techStack" class="inline-block px-3 py-1 mb-2 rounded-full text-xs font-semibold
+        bg-blue-600/20 primary-badge-text_color border border-blue-600/30">
+                                {{ tech }}
+                            </span>
                         </div>
+
+                    </div>
+
+                    <div class="flex gap-3 justify-center items-center">
+                        <app-button [widthFull]="true" *ngIf="project.webLink" [secondaryBtn]="true"
+                            (click)="openPreviewLink(project.webLink)">View Project</app-button>
+                        <app-button [widthFull]="true" *ngIf="project.githubLink" [primaryBtn]="true"
+                            (click)="openGithubLink(project.githubLink)"><fa-icon [icon]="faGithub"
+                                class="w-10 h-10"></fa-icon> View Code</app-button>
                     </div>
                 </div>
-            </ng-template>
-        </div>
+            </div>
+
+        </ng-template>
     </div>
 </section>
-
-
 <app-project-details [projectDetails]="openProjectDetail" *ngIf="openDetails"
     (confirmAction)="closeDetailsModal()"></app-project-details>

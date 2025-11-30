@@ -1,4 +1,24 @@
 <div class="relative">
+  <!-- theme-toggle.component.html -->
+  <button (click)="toggleTheme()" class="fixed z-3 top-20 right-6 w-14 h-14 rounded-full flex items-center justify-center 
+         shadow-lg transition-all duration-300 primary-bg_color hover:scale-105"
+    [attr.aria-label]="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+    <span class="absolute text-2xl transition-all duration-500" [class.opacity-100]="!isDark" [class.opacity-0]="isDark"
+      [class.scale-100]="!isDark" [class.scale-0]="isDark">
+      <span class="material-symbols-outlined">
+        bedtime
+      </span>
+    </span>
+
+    <span class="absolute text-2xl transition-all duration-500" [class.opacity-100]="isDark" [class.opacity-0]="!isDark"
+      [class.scale-100]="isDark" [class.scale-0]="!isDark">
+
+      <span class="material-symbols-outlined">
+        sunny
+      </span>
+    </span>
+  </button>
+
   <!-- Top Button -->
   <button id="backToTopTop"
     class="fixed bottom-9 right-9 w-14 h-14 bg-[#4070f4] text-white rounded-full flex items-center justify-center border border-white  z-3 transition-opacity duration-300"
@@ -17,6 +37,6 @@
   </button>
 </div>
 
-
+<app-social-contact></app-social-contact>
 <app-header></app-header>
 <app-footer></app-footer>

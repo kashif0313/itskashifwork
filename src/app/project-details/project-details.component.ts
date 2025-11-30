@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-project-details',
@@ -7,6 +8,7 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
   styleUrl: './project-details.component.css',
 })
 export class ProjectDetailsComponent {
+  faGithub = faGithub;
   @Output() confirmAction: EventEmitter<any> = new EventEmitter<any>();
   @Input() projectDetails: any;
   closeModal() {

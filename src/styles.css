@@ -1,3 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
-@tailwind utilities;
+
+@theme {
+  --color-bg-dark: #111827;
+  --color-text-dark: #f9fafb;
+  --color-bg-light: #f7f7f7;
+  --color-text-light: #000000;
+  --color-sec-text-light: #adadad;
+  --color-sec-text-dark: #ffffff;
+  --primary-color-text: #2563ec;
+  --primary-bg-dark: #1e2939;
+  --primary-bg-light: #ffffff;
+
+  /* Added explicit border colors */
+  --primary-border-light: #91b6fe;
+  --primary-border-dark: #5a8ffb;
+
+  --primary-badge-text: #5a8ffb;
+  --primary-badge-text-dark: #ffffff;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+html {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-light);
+
+  scroll-behavior: smooth;
+}
+
+html.dark {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-dark);
+}
+
+/* Secondary text colors */
+.secondary_color {
+  color: var(--color-sec-text-light);
+}
+.dark .secondary_color {
+  color: var(--color-sec-text-dark);
+}
+
+/* Primary color and background */
+.primary-color {
+  color: var(--primary-color-text);
+}
+
+.primary-bg_color {
+  background-color: var(--primary-bg-light);
+}
+.dark .primary-bg_color {
+  background-color: var(--primary-bg-dark);
+}
+
+.primary-badge-text_color {
+  color: var(--primary-badge-text);
+}
+.dark .primary-badge-text_color {
+  color: var(--primary-badge-text-dark);
+}
+
+/* ✅ Fixed border colors */
+.primary-border_color {
+  border: 2px solid var(--primary-border-light);
+}
+.dark .primary-border_color {
+  border: 2px solid var(--primary-border-dark);
+}
+
+.primary_btn_txt_color {
+  color: var(--primary-color-text);
+}
+.dark .primary_btn_txt_color {
+  color: var(--color-sec-text-dark);
+}

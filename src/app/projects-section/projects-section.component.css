@@ -8,3 +8,12 @@
   opacity: 1;
   transform: translateY(0);
 }
+
+.lazy-img {
+  filter: blur(12px);
+  transition: filter 0.4s ease-out;
+}
+
+.lazy-img-loaded {
+  filter: blur(0);
+}

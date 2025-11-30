@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { helperFunctions } from '../helpers/helperFunctions';
 
 @Component({
@@ -8,22 +8,71 @@ import { helperFunctions } from '../helpers/helperFunctions';
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css',
 })
-export class ClientsComponent implements OnInit {
-  clients: any = [];
-  activeIndex = 0;
+export class ClientsComponent implements OnInit, AfterViewInit {
   loading: boolean = true;
 
-  constructor(private helperFunction: helperFunctions) {}
+  clients: any[] = [];
+  extendedClients: any[] = [];
+  activeIndex = 0;
+  cardWidth = 550 + 24;
+  dynaicWidth: string = '550px'; // default desktop width
 
+  translateX = 0;
+  // const cardWidth = 550 + 24; // 550px card + 24px gap
+
+  constructor(private helperFunction: helperFunctions) {}
+  setDynamicWidth() {
+    this.dynaicWidth = window.innerWidth < 768 ? '300px' : '550px';
+    this.cardWidth = Number(this.dynaicWidth.replace(/\D/g, '')) + 24;
+  }
   async ngOnInit() {
-    this.clients = await this.helperFunction.getClients();
+    const original = await this.helperFunction.getClients();
+    this.setDynamicWidth();
     this.loading = false;
-    this.startClientAnimation();
+
+    if (original.length > 0) {
+      // Create a long repeated list (100 loops = infinite feel)
+      for (let i = 0; i < 100; i++) {
+        this.extendedClients.push(...original);
+      }
+
+      this.startAutoSlide();
+    }
+
+    window.addEventListener('resize', () => {
+      this.setDynamicWidth();
+    });
   }
 
-  startClientAnimation() {
+  centerInitialCard() {
+    const numericValue = Number(this.dynaicWidth.replace(/\D/g, ''));
+
+    // Move slider so first card is centered
+    this.translateX = -(this.activeIndex * numericValue);
+  }
+
+  startAutoSlide() {
     setInterval(() => {
-      this.activeIndex = (this.activeIndex + 1) % this.clients.length;
-    }, 3000); // Change every 3 seconds
+      this.activeIndex++;
+
+      const screenCenterOffset = window.innerWidth / 2 - this.cardWidth / 2;
+
+      this.translateX = screenCenterOffset - this.activeIndex * this.cardWidth;
+
+      // Infinite loop fix
+      if (this.activeIndex > this.extendedClients.length - 10) {
+        this.activeIndex = Math.floor(this.extendedClients.length / 2);
+
+        this.translateX =
+          screenCenterOffset - this.activeIndex * this.cardWidth;
+      }
+    }, 3000);
+  }
+  ngAfterViewInit() {
+    window.addEventListener('resize', () => {
+      const screenCenterOffset = window.innerWidth / 2 - this.cardWidth / 2;
+
+      this.translateX = screenCenterOffset - this.activeIndex * this.cardWidth;
+    });
   }
 }

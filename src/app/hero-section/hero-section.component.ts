@@ -5,6 +5,7 @@ import {
   Component,
   HostListener,
   Inject,
+  Input,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
@@ -17,7 +18,7 @@ import { Router } from '@angular/router';
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })
-export class HeroSectionComponent implements AfterViewInit, OnInit {
+export class HeroSectionComponent {
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
@@ -26,42 +27,40 @@ export class HeroSectionComponent implements AfterViewInit, OnInit {
 
   private words = ['Website Developer', 'Graphic Designer', 'Video Editor'];
   private typewriterElement: HTMLElement | null = null;
-  bigScreen: boolean = false;
+  // bigScreen: boolean = false;
 
-  async ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.checkScreenSize();
-    }
-  }
+  // async ngOnInit() {
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     this.checkScreenSize();
+  //   }
+  // }
 
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.checkScreenSize();
-  }
+  // @HostListener('window:resize', ['$event'])
+  // onResize() {
+  //   this.checkScreenSize();
+  // }
 
-  scrollToProjects() {
-    if (isPlatformBrowser(this.platformId)) {
-      const element = document.querySelector('#projectSection');
-      if (element) {
-        (element as HTMLElement).scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }
+  // scrollToProjects() {
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     const element = document.querySelector('#projectSection');
+  //     if (element) {
+  //       (element as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+  //     }
+  //   }
+  // }
   scrollToContacts() {
-    if (isPlatformBrowser(this.platformId)) {
-      const element = document.querySelector('#contactForm');
-      if (element) {
-        (element as HTMLElement).scrollIntoView({ behavior: 'smooth' });
-      }
+    const element = document.getElementById('contactForm');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
-  private checkScreenSize() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.bigScreen = window.innerWidth > 1023;
-      this.cdr.detectChanges(); // 👈 Force Angular to update view
-    }
-  }
+  // private checkScreenSize() {
+  //   if (isPlatformBrowser(this.platformId)) {
+  //     this.bigScreen = window.innerWidth > 1023;
+  //     this.cdr.detectChanges(); // 👈 Force Angular to update view
+  //   }
+  // }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -99,4 +98,11 @@ export class HeroSectionComponent implements AfterViewInit, OnInit {
 
     type();
   }
+  imageSrc = 'profileImage.png';
+
+  // handleImageError(event: Event) {
+  //   const target = event.target as HTMLImageElement;
+  //   target.onerror = null;
+  //   target.src = 'profileImage.png';
+  // }
 }

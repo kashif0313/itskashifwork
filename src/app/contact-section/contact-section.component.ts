@@ -3,6 +3,13 @@ import { Component } from '@angular/core';
 import Swal from 'sweetalert2';
 import emailjs, { type EmailJSResponseStatus } from '@emailjs/browser';
 import { Router } from '@angular/router';
+import {
+  faFacebook,
+  faGithub,
+  faLinkedinIn,
+  IconDefinition,
+} from '@fortawesome/free-brands-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-contact-section',
@@ -12,6 +19,11 @@ import { Router } from '@angular/router';
   styleUrl: './contact-section.component.css',
 })
 export class ContactSectionComponent {
+  faGithub = faGithub;
+  faLinkedin = faLinkedinIn;
+  faFacebook = faFacebook;
+  faEmail = faEnvelope;
+
   contactEmail: string = 'kashif.imran0313@gmail.com';
   constructor(private router: Router) {}
 
@@ -32,11 +44,63 @@ export class ContactSectionComponent {
 
   public sendEmail(e: Event) {
     e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const nameInput = form.querySelector<HTMLInputElement>(
+      'input[name="user_name"]'
+    );
+    const emailInput = form.querySelector<HTMLInputElement>(
+      'input[name="user_email"]'
+    );
+    const messageInput = form.querySelector<HTMLTextAreaElement>(
+      'textarea[name="message"]'
+    );
+
+    const nameError = form.querySelector<HTMLSpanElement>('.name-error');
+    const emailError = form.querySelector<HTMLSpanElement>('.email-error');
+    const messageError = form.querySelector<HTMLSpanElement>('.message-error');
+
+    if (
+      !nameInput ||
+      !emailInput ||
+      !messageInput ||
+      !nameError ||
+      !emailError ||
+      !messageError
+    )
+      return;
+
+    let hasError = false;
+
+    // ⭐ Name validation
+    if (nameInput.value.trim() === '') {
+      nameError.classList.remove('hidden');
+      hasError = true;
+    } else {
+      nameError.classList.add('hidden');
+    }
+
+    // ⭐ Email validation (required + pattern)
+    if (!emailInput.checkValidity()) {
+      emailError.classList.remove('hidden');
+      hasError = true;
+    } else {
+      emailError.classList.add('hidden');
+    }
+
+    // ⭐ Message validation
+    if (messageInput.value.trim() === '') {
+      messageError.classList.remove('hidden');
+      hasError = true;
+    } else {
+      messageError.classList.add('hidden');
+    }
+
+    if (hasError) return;
     this.showLoading('Sending Email', 'Please wait sending email...');
     emailjs
       .sendForm(
         'service_b124c9s',
-        'template_q9mox5h',
+        'template_2lkppdx',
         e.target as HTMLFormElement,
         {
           publicKey: '3-fQaflqnq8rizVh-',

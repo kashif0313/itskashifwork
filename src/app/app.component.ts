@@ -14,6 +14,9 @@ export class AppComponent {
   constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   ngOnInit() {
+    const savedTheme = localStorage.getItem('theme');
+    this.isDark = savedTheme === 'dark';
+    document.documentElement.classList.toggle('dark', this.isDark);
     this.updateCircleProgress(); // Initialize progress
   }
 
@@ -41,5 +44,14 @@ export class AppComponent {
   // Smooth scroll to the top
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  isDark = false;
+
+  toggleTheme() {
+    console.log('theme toggle');
+    this.isDark = !this.isDark;
+    document.documentElement.classList.toggle('dark', this.isDark);
+    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
   }
 }

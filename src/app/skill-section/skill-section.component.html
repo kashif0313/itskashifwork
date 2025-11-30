@@ -1,33 +1,43 @@
-<section id="skills" class="px-8 py-6 bg-gray-100 dark:bg-gray-800">
-    <div class="py-10">
-        <h2 class="text-3xl font-bold text-black dark:text-white mb-12 text-center">
-            Skills &amp; Technologies
+<section id="skills" class="py-20">
+    <div class="text-center mb-16">
+
+        <h2 class="text-4xl font-bold mb-3">
+            My <span class="primary-color">Expertise</span>
         </h2>
-        <div class="mt-0">
-            <div class="flex flex-wrap gap-6 justify-center">
-                <!-- Loop through skills array -->
-                <div class="card bg-white dark:bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col"
-                    *ngFor="let skill of skills" #card
-                    [ngClass]="{ 'w-full h-auto': isSmallScreen, 'h-[300px]': !isSmallScreen }">
-                    <h3 class="text-2xl font-bold text-black dark:text-white mb-3 text-center">{{ skill.title }}</h3>
-                    <p class="text-black dark:text-gray-300 mb-4 text-center">{{ skill.detailDescription }}</p>
-                    <div class="flex flex-wrap gap-6 justify-center">
-                        <!-- Loop through skill details -->
-                        <div class="bg-gray-200/50 p-4 rounded-lg text-center hover:shadow-2xl dark:hover:bg-gray-400 transition-all flex flex-col items-center"
-                            *ngFor="let detail of skill.details" style="width: 100px;">
-                            <ng-container *ngIf="detail.icon">
-                                <img [src]="detail.icon" height="50px" width="50px" class="mb-2" />
-                            </ng-container>
-                            <ng-container *ngIf="detail.svg">
-                                <div [innerHTML]="detail.svg" class="text-3xl text-[#4070f4] mb-2"></div>
-                            </ng-container>
-                            <p class="text-black dark:text-white text-sm">{{ detail.label }}</p>
-                        </div>
+        <p class="secondary_color">
+            A focused look at the technologies and creative tools driving my projects.
+        </p>
+    </div>
+
+    <!-- Grid for 2-column layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 px-8 mx-auto">
+        <div *ngFor="let category of skillsData; let i = index" [ngClass]="{
+        'md:col-span-2': i === skillsData.length - 1 && skillsData.length % 2 !== 0
+      }" class="p-6 rounded-2xl primary-border_color shadow-xl hover:shadow-blue-500/10">
+            <!-- Category Header -->
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-semibold primary-color mb-2">
+                    {{ category.title }}
+                </h3>
+                <p class="secondary_color">{{ category.detailDescription }}</p>
+            </div>
+
+            <!-- Skill Cards -->
+            <div class="flex flex-wrap justify-center gap-6 pb-5 ">
+                <div *ngFor="let skill of category.details"
+                    class=" primary-bg_color group flex flex-col items-center justify-center translate-y-3 text-center w-44 h-40 rounded-2xl bg-white dark:bg-gray-800 hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300 shadow-md hover:shadow-blue-500/20">
+
+                    <div
+                        class=" w-16 h-16 flex items-center justify-center rounded-full mb-3 border border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100  transform transition-transform duration-300 group-hover:scale-110">
+                        <img [src]="skill.icon" alt="{{ skill.label }}" class="w-8 h-8 object-contain" />
                     </div>
+
+                    <h3 class="text-base font-semibold ">
+                        {{ skill.label }}
+                    </h3>
                 </div>
 
             </div>
         </div>
-
     </div>
 </section>

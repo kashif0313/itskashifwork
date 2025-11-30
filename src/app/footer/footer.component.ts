@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
+  faFacebook,
   faGithub,
   faLinkedinIn,
   faTwitter,
@@ -16,7 +17,7 @@ import { Router } from '@angular/router';
 export class FooterComponent {
   faGithub = faGithub;
   faLinkedin = faLinkedinIn;
-  faTwitter = faTwitter;
+  faFacebook = faFacebook;
   @ViewChild('contactForm', { static: false }) contactForm!: ElementRef;
 
   constructor(private router: Router) {}

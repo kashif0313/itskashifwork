@@ -36,7 +36,7 @@ export class ProjectsSectionComponent implements OnInit {
   constructor(private helperFunction: helperFunctions) {}
   async ngOnInit() {
     this.loading = true; // Start loading
-    this.projects = await this.helperFunction.getProjects(8);
+    this.projects = await this.helperFunction.getProjects(18);
     this.loading = false; // Stop loading after fetching data
     this.filteredProjects = this.projects;
     setTimeout(() => (this.loading = false), 1000);

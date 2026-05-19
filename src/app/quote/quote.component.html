@@ -1,0 +1,141 @@
+<main class="flex-1 flex flex-col items-center justify-center px-4 py-12 relative">
+
+    <!-- Background -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -z-10"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-violet/10 rounded-full blur-[120px] -z-10"></div>
+
+
+    <div class="w-full max-w-5xl glass-panel rounded-xl p-8 lg:p-12 shadow-2xl">
+
+        <!-- Progress Header -->
+
+        <div class="flex flex-col gap-6 mb-12">
+
+            <div class="flex justify-between items-end">
+                <div>
+                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Step 01</span>
+                    <h3 class="text-slate-100 text-lg font-semibold">Service Selection</h3>
+                </div>
+
+                <p class="text-slate-400 text-sm">Step 1 of 4</p>
+            </div>
+
+            <div class="relative h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-accent-violet rounded-full"
+                    style="width:25%"></div>
+            </div>
+
+        </div>
+
+
+        <!-- Title -->
+
+        <div class="text-center mb-12">
+
+            <h1 class="text-white text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+                Request a Project Quote
+            </h1>
+
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                Elevate your digital presence. Select your primary service to begin the journey with our award-winning
+                studio.
+            </p>
+
+        </div>
+
+
+
+        <!-- SERVICE CARDS -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Web Design -->
+
+            <div (click)="selectService('web')" [ngClass]="selectedService === 'web' ? 'active-glow' : ''"
+                class="glass-card rounded-xl p-8 flex flex-col items-center text-center cursor-pointer group">
+
+                <div
+                    class="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-5xl text-primary">
+                        code_blocks
+                    </span>
+                </div>
+
+                <h4 class="text-white text-xl font-bold mb-2">
+                    Web Design
+                </h4>
+
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Modern, responsive experiences built for the future web.
+                </p>
+
+            </div>
+
+
+
+            <!-- Graphic Design -->
+
+            <div (click)="selectService('graphic')" [ngClass]="selectedService === 'graphic' ? 'active-glow' : ''"
+                class="glass-card rounded-xl p-8 flex flex-col items-center text-center cursor-pointer group">
+
+                <div
+                    class="size-20 rounded-2xl bg-accent-violet/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-5xl text-accent-violet">
+                        polyline
+                    </span>
+                </div>
+
+                <h4 class="text-white text-xl font-bold mb-2">
+                    Graphic Design
+                </h4>
+
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    High-end brand identities and stunning visual narratives.
+                </p>
+
+            </div>
+
+
+
+            <!-- Video Production -->
+
+            <div (click)="selectService('video')" [ngClass]="selectedService === 'video' ? 'active-glow' : ''"
+                class="glass-card rounded-xl p-8 flex flex-col items-center text-center cursor-pointer group">
+
+                <div
+                    class="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-5xl text-primary">
+                        camera
+                    </span>
+                </div>
+
+                <h4 class="text-white text-xl font-bold mb-2">
+                    Video Production
+                </h4>
+
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Cinematic storytelling and motion graphics for brands.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Continue Button -->
+
+        <div class="mt-16 flex justify-center">
+
+            <button (click)="continueStep()" [disabled]="!selectedService"
+                class="px-12 py-4 rounded-full bg-gradient-to-r from-primary to-accent-violet text-white font-bold text-lg hover:shadow-[0_0_30px_rgba(0,208,255,0.4)] transition-all transform hover:scale-105 active:scale-95 disabled:opacity-40">
+
+                Continue to Details
+
+            </button>
+
+        </div>
+
+    </div>
+
+</main>

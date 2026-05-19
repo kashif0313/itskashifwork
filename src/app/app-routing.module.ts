@@ -4,10 +4,12 @@ import { AddClientReviewComponent } from './add-client-review/add-client-review.
 import { HomePageComponent } from './home-page/home-page.component';
 import { ProjectsPageComponent } from './projects-page/projects-page.component';
 import { AddProjectsComponent } from './add-projects/add-projects.component';
+import { QuoteComponent } from './quote/quote.component';
 
 const routes: Routes = [
   { path: 'home', component: HomePageComponent }, // ✅ Change 'HOME' to 'home'
   { path: 'projects', component: ProjectsPageComponent },
+  { path: 'quote', component: QuoteComponent },
   { path: 'add/client/review', component: AddClientReviewComponent },
   { path: 'add/projects', component: AddProjectsComponent },
   { path: '', redirectTo: 'home', pathMatch: 'full' }, // ✅ Update redirectTo value

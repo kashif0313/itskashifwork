@@ -1,6 +1,7 @@
-<button type="button" (click)="onClick.emit($event)" [ngClass]="{
-      'primary-border_color primary_btn_txt_color': primaryBtn ,
-      ' hover:bg-blue-400  bg-blue-500 text-white': secondaryBtn ,
-    }" [class.w-full]="widthFull" class="py-2 px-3  text-sm font-medium text-center rounded-lg ">
+<button type="button" (click)="onClick.emit($event)" [disabled]="is_disabled" [ngClass]="{
+    'primary-border_color primary_btn_txt_color': primaryBtn,
+    'hover:bg-blue-400 bg-blue-500 text-white': secondaryBtn,
+    'opacity-50 cursor-not-allowed pointer-events-none': is_disabled
+  }" [class.w-full]="widthFull" class="py-2 px-3 text-sm font-medium text-center rounded-lg transition-all">
   <ng-content></ng-content>
 </button>

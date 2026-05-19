@@ -38,7 +38,15 @@
                 <strong>stunning visuals</strong>, blending technical excellence with artistic intuition.
                 Let's build something extraordinary.
             </p>
+            <div class="md:hidden flex items-center justify-evenly w-full flex-wrap my-5">
 
+                <a *ngFor="let link of socialLinks" [href]="link.url" class="p-2 rounded-full transition duration-300">
+
+                    <fa-icon [icon]="link.Icon" class="text-2xl w-8 h-8"></fa-icon>
+
+                </a>
+
+            </div>
             <!-- CTA Buttons -->
             <div class="flex flex-col sm:flex-row sm:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
                 <a href="#projects"

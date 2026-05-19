@@ -10,7 +10,19 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import {
+  faGithub,
+  faLinkedinIn,
+  faFacebook,
+  IconDefinition,
+} from '@fortawesome/free-brands-svg-icons';
 
+interface SocialLink {
+  id: string;
+  username: string;
+  Icon: IconDefinition;
+  url: string;
+}
 @Component({
   selector: 'app-hero-section',
   standalone: false,
@@ -22,7 +34,7 @@ export class HeroSectionComponent {
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: object
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   private words = ['Website Developer', 'Graphic Designer', 'Video Editor'];
@@ -48,6 +60,31 @@ export class HeroSectionComponent {
   //     }
   //   }
   // }
+
+  faGithub = faGithub;
+  faLinkedin = faLinkedinIn;
+  faFacebook = faFacebook;
+
+  socialLinks: SocialLink[] = [
+    {
+      id: 'github',
+      username: 'kashif0313',
+      Icon: this.faGithub,
+      url: 'https://github.com/kashif0313',
+    },
+    {
+      id: 'linkedin',
+      username: '/in/KashifImran',
+      Icon: this.faLinkedin,
+      url: 'https://www.linkedin.com/in/kashif-imran-607091222/',
+    },
+    {
+      id: 'facebook',
+      username: 'ItsKashifWork',
+      Icon: this.faFacebook,
+      url: 'https://www.facebook.com/ItsKashifWork/',
+    },
+  ];
   scrollToContacts() {
     const element = document.getElementById('contactForm');
     if (element) {

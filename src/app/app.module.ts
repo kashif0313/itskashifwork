@@ -39,6 +39,7 @@ import { AddProjectsComponent } from './add-projects/add-projects.component';
 import { FormsModule } from '@angular/forms';
 import { helperFunctions } from './helpers/helperFunctions';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
+import { QuoteComponent } from './quote/quote.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { ProjectDetailsComponent } from './project-details/project-details.compo
     AddClientReviewComponent,
     AddProjectsComponent,
     ProjectDetailsComponent,
+    QuoteComponent,
   ],
   imports: [
     BrowserModule,

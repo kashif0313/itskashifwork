@@ -35,6 +35,7 @@ export class HeaderComponent {
     { id: 'projects', title: 'Projects' },
     { id: 'contact', title: 'Contact' },
     { id: 'testimonials', title: 'Testimonials' },
+    // { id: 'quote', title: 'Get Quote' },
   ];
 
   scrollTo(sectionId: string) {
@@ -42,11 +43,17 @@ export class HeaderComponent {
 
     if (isHome) {
       // Already on home → scroll directly
+      if (sectionId == 'quote') {
+        this.router.navigate(['quote']);
+      }
       const element = document.getElementById(sectionId);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } else {
+      if (sectionId == 'quote') {
+        this.router.navigate(['quote']);
+      }
       // Not on home → navigate first, then scroll
       this.router.navigate(['/']).then(() => {
         setTimeout(() => {

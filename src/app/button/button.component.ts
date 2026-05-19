@@ -11,6 +11,7 @@ export class ButtonComponent {
   @Input() primaryBtn: boolean = false;
   @Input() secondaryBtn: boolean = false;
   @Input() widthFull: boolean = false;
+  @Input() is_disabled: boolean = false;
 
   @Output() onClick = new EventEmitter<Event>();
 }

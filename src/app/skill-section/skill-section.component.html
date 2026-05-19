@@ -24,9 +24,10 @@
 
             <!-- Skill Cards -->
             <div class="flex flex-wrap justify-center gap-6 pb-5 ">
-                <div *ngFor="let skill of category.details"
-                    class=" primary-bg_color group flex flex-col items-center justify-center translate-y-3 text-center w-44 h-40 rounded-2xl bg-white dark:bg-gray-800 hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300 shadow-md hover:shadow-blue-500/20">
-
+                <div *ngFor="let skill of category.details" class="primary-bg_color group flex flex-col items-center justify-center translate-y-3 text-center
+           w-32 h-32 sm:w-44 sm:h-40 rounded-2xl bg-white dark:bg-gray-800
+           hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-gray-700
+           transition duration-300 shadow-md hover:shadow-blue-500/20">
                     <div
                         class=" w-16 h-16 flex items-center justify-center rounded-full mb-3 border border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100  transform transition-transform duration-300 group-hover:scale-110">
                         <img [src]="skill.icon" alt="{{ skill.label }}" class="w-8 h-8 object-contain" />

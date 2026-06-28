@@ -14,10 +14,12 @@ export class AppComponent {
   constructor(@Inject(PLATFORM_ID) private platformId: object) {}
 
   ngOnInit() {
-    const savedTheme = localStorage.getItem('theme');
-    this.isDark = savedTheme === 'dark';
-    document.documentElement.classList.toggle('dark', this.isDark);
-    this.updateCircleProgress(); // Initialize progress
+    if (isPlatformBrowser(this.platformId)) {
+      const savedTheme = localStorage.getItem('theme');
+      this.isDark = savedTheme === 'dark';
+      document.documentElement.classList.toggle('dark', this.isDark);
+      this.updateCircleProgress(); // Initialize progress
+    }
   }
 
   // Scroll Listener

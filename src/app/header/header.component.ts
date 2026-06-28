@@ -35,7 +35,7 @@ export class HeaderComponent {
     { id: 'projects', title: 'Projects' },
     { id: 'contact', title: 'Contact' },
     { id: 'testimonials', title: 'Testimonials' },
-    // { id: 'quote', title: 'Get Quote' },
+    { id: 'quote', title: 'Get Quote' },
   ];
 
   scrollTo(sectionId: string) {

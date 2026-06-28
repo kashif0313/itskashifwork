@@ -1,0 +1,97 @@
+.modal-overlay {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+:host-context(html.dark) .modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-glass {
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow:
+    0 24px 48px rgba(15, 23, 42, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+:host-context(html.dark) .modal-glass {
+  background: rgba(30, 41, 57, 0.92);
+  color: #f8fafc;
+  border-color: rgba(90, 143, 251, 0.25);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.modal-title {
+  color: #0f172a;
+}
+
+:host-context(html.dark) .modal-title {
+  color: #ffffff;
+}
+
+.modal-description {
+  color: #334155;
+}
+
+:host-context(html.dark) .modal-description {
+  color: #e2e8f0;
+}
+
+.modal-label {
+  color: #1e293b;
+}
+
+:host-context(html.dark) .modal-label {
+  color: #f1f5f9;
+}
+
+.modal-close-btn {
+  color: #334155;
+  background: rgba(241, 245, 249, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+.modal-close-btn:hover {
+  color: #0f172a;
+  background: #ffffff;
+}
+
+:host-context(html.dark) .modal-close-btn {
+  color: #e2e8f0;
+  background: rgba(17, 24, 39, 0.7);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+:host-context(html.dark) .modal-close-btn:hover {
+  color: #ffffff;
+  background: rgba(51, 65, 85, 0.85);
+}
+
+.modal-image-wrap {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+:host-context(html.dark) .modal-image-wrap {
+  background: rgba(17, 24, 39, 0.7);
+  border-color: rgba(100, 116, 139, 0.4);
+}
+
+.tech-badge {
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1e40af;
+}
+
+:host-context(html.dark) .tech-badge {
+  background: rgba(90, 143, 251, 0.2);
+  border-color: rgba(90, 143, 251, 0.4);
+  color: #dbeafe;
+}

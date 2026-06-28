@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { helperFunctions } from '../helpers/helperFunctions';
 
 @Component({
@@ -20,8 +21,12 @@ export class ClientsComponent implements OnInit, AfterViewInit {
   translateX = 0;
   // const cardWidth = 550 + 24; // 550px card + 24px gap
 
-  constructor(private helperFunction: helperFunctions) {}
+  constructor(
+    private helperFunction: helperFunctions,
+    @Inject(PLATFORM_ID) private platformId: object,
+  ) {}
   setDynamicWidth() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.dynaicWidth = window.innerWidth < 768 ? '300px' : '550px';
     this.cardWidth = Number(this.dynaicWidth.replace(/\D/g, '')) + 24;
   }
@@ -39,9 +44,11 @@ export class ClientsComponent implements OnInit, AfterViewInit {
       this.startAutoSlide();
     }
 
-    window.addEventListener('resize', () => {
-      this.setDynamicWidth();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('resize', () => {
+        this.setDynamicWidth();
+      });
+    }
   }
 
   centerInitialCard() {
@@ -52,6 +59,7 @@ export class ClientsComponent implements OnInit, AfterViewInit {
   }
 
   startAutoSlide() {
+    if (!isPlatformBrowser(this.platformId)) return;
     setInterval(() => {
       this.activeIndex++;
 
@@ -69,6 +77,7 @@ export class ClientsComponent implements OnInit, AfterViewInit {
     }, 3000);
   }
   ngAfterViewInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
     window.addEventListener('resize', () => {
       const screenCenterOffset = window.innerWidth / 2 - this.cardWidth / 2;
 

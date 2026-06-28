@@ -1,141 +1,422 @@
-<main class="flex-1 flex flex-col items-center justify-center px-4 py-12 relative">
+<section class="py-20 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4">
 
-    <!-- Background -->
-    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -z-10"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-violet/10 rounded-full blur-[120px] -z-10"></div>
-
-
-    <div class="w-full max-w-5xl glass-panel rounded-xl p-8 lg:p-12 shadow-2xl">
-
-        <!-- Progress Header -->
-
-        <div class="flex flex-col gap-6 mb-12">
-
-            <div class="flex justify-between items-end">
-                <div>
-                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Step 01</span>
-                    <h3 class="text-slate-100 text-lg font-semibold">Service Selection</h3>
-                </div>
-
-                <p class="text-slate-400 text-sm">Step 1 of 4</p>
-            </div>
-
-            <div class="relative h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-accent-violet rounded-full"
-                    style="width:25%"></div>
-            </div>
-
+    <!-- ==================== SUCCESS PAGE ==================== -->
+    <div *ngIf="showSuccessPage" class="step-fade flex flex-col items-center justify-center text-center py-16">
+      <div
+        class="primary-bg_color rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-10 lg:p-14 max-w-lg w-full">
+        <div
+          class="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center success-pulse">
+          <span class="material-symbols-outlined text-5xl primary-color">check_circle</span>
         </div>
-
-
-        <!-- Title -->
-
-        <div class="text-center mb-12">
-
-            <h1 class="text-white text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-                Request a Project Quote
-            </h1>
-
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
-                Elevate your digital presence. Select your primary service to begin the journey with our award-winning
-                studio.
-            </p>
-
-        </div>
-
-
-
-        <!-- SERVICE CARDS -->
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <!-- Web Design -->
-
-            <div (click)="selectService('web')" [ngClass]="selectedService === 'web' ? 'active-glow' : ''"
-                class="glass-card rounded-xl p-8 flex flex-col items-center text-center cursor-pointer group">
-
-                <div
-                    class="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-5xl text-primary">
-                        code_blocks
-                    </span>
-                </div>
-
-                <h4 class="text-white text-xl font-bold mb-2">
-                    Web Design
-                </h4>
-
-                <p class="text-slate-400 text-sm leading-relaxed">
-                    Modern, responsive experiences built for the future web.
-                </p>
-
-            </div>
-
-
-
-            <!-- Graphic Design -->
-
-            <div (click)="selectService('graphic')" [ngClass]="selectedService === 'graphic' ? 'active-glow' : ''"
-                class="glass-card rounded-xl p-8 flex flex-col items-center text-center cursor-pointer group">
-
-                <div
-                    class="size-20 rounded-2xl bg-accent-violet/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-5xl text-accent-violet">
-                        polyline
-                    </span>
-                </div>
-
-                <h4 class="text-white text-xl font-bold mb-2">
-                    Graphic Design
-                </h4>
-
-                <p class="text-slate-400 text-sm leading-relaxed">
-                    High-end brand identities and stunning visual narratives.
-                </p>
-
-            </div>
-
-
-
-            <!-- Video Production -->
-
-            <div (click)="selectService('video')" [ngClass]="selectedService === 'video' ? 'active-glow' : ''"
-                class="glass-card rounded-xl p-8 flex flex-col items-center text-center cursor-pointer group">
-
-                <div
-                    class="size-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <span class="material-symbols-outlined text-5xl text-primary">
-                        camera
-                    </span>
-                </div>
-
-                <h4 class="text-white text-xl font-bold mb-2">
-                    Video Production
-                </h4>
-
-                <p class="text-slate-400 text-sm leading-relaxed">
-                    Cinematic storytelling and motion graphics for brands.
-                </p>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- Continue Button -->
-
-        <div class="mt-16 flex justify-center">
-
-            <button (click)="continueStep()" [disabled]="!selectedService"
-                class="px-12 py-4 rounded-full bg-gradient-to-r from-primary to-accent-violet text-white font-bold text-lg hover:shadow-[0_0_30px_rgba(0,208,255,0.4)] transition-all transform hover:scale-105 active:scale-95 disabled:opacity-40">
-
-                Continue to Details
-
-            </button>
-
-        </div>
-
+        <h1 class="text-3xl lg:text-4xl font-bold mb-3">
+          Request <span class="primary-color">Received</span>
+        </h1>
+        <p class="text-gray-500 mb-6 leading-relaxed">
+          Thank you, {{ quote.name }}! Your quote request has been submitted successfully.
+          I'll review the details and get back to you soon.
+        </p>
+        <p class="text-sm text-gray-500 mb-8">
+          Redirecting to home in
+          <span class="primary-color font-bold text-lg">{{ redirectCountdown }}</span>
+          second{{ redirectCountdown === 1 ? '' : 's' }}...
+        </p>
+        <button (click)="goHome()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium shadow-md transition flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-lg">home</span>
+          Go to Home Now
+        </button>
+      </div>
     </div>
 
-</main>
+    <!-- ==================== QUOTE WIZARD ==================== -->
+    <ng-container *ngIf="!showSuccessPage">
+
+      <!-- Page Heading -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-3">
+          Request a <span class="primary-color">Quote</span>
+        </h1>
+        <p class="text-gray-500 max-w-2xl mx-auto">
+          Tell me about your project and I'll send you a tailored estimate.
+        </p>
+      </div>
+
+      <div class="primary-bg_color rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 lg:p-10">
+
+        <!-- Progress Header -->
+        <div class="flex flex-col gap-4 mb-10">
+          <div class="flex justify-between items-end">
+            <div>
+              <span class="primary-color text-xs font-bold uppercase tracking-widest">
+                Step {{ currentStep | number: '2.0-0' }}
+              </span>
+              <h3 class="text-lg font-semibold mt-1">{{ stepTitle }}</h3>
+            </div>
+            <p class="text-gray-500 text-sm">Step {{ currentStep }} of {{ totalSteps }}</p>
+          </div>
+          <div class="relative h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              class="absolute top-0 left-0 h-full bg-blue-600 rounded-full transition-all duration-500"
+              [style.width.%]="progressPercent">
+            </div>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="stepError"
+          class="mb-6 px-4 py-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm">
+          {{ stepError }}
+        </div>
+
+        <!-- STEP 1: Category -->
+        <div *ngIf="currentStep === 1" class="step-fade">
+          <p class="text-center text-gray-500 mb-8">
+            Select your primary service to begin.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div *ngFor="let cat of categories" (click)="selectCategory(cat.value)"
+              [ngClass]="quote.category === cat.value ? 'selected' : ''"
+              class="category-card primary-bg_color rounded-2xl p-8 flex flex-col items-center text-center border border-gray-200 dark:border-gray-700 shadow-lg group">
+              <div
+                class="w-20 h-20 rounded-2xl bg-white dark:bg-gray-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <img [src]="cat.icon" [alt]="cat.title" class="w-12 h-12 object-contain" />
+              </div>
+              <h4 class="text-xl font-bold mb-2">{{ cat.title }}</h4>
+              <p class="text-gray-500 text-sm leading-relaxed">{{ cat.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEB STEP 2: Project Type -->
+        <div *ngIf="quote.category === 'web' && currentStep === 2" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">What type of <span class="primary-color">project</span>?</h2>
+            <p class="text-gray-500">Choose the category that best fits your needs.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <div *ngFor="let type of webProjectTypes" (click)="selectProjectType(type.value)"
+              [ngClass]="quote.projectType === type.value ? 'selected' : ''"
+              class="option-card primary-bg_color rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+              <h4 class="font-bold mb-1">{{ type.title }}</h4>
+              <p class="text-gray-500 text-sm">{{ type.description }}</p>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <p class="font-semibold mb-4">Additional requirements</p>
+            <div class="flex flex-wrap gap-4">
+              <label
+                class="checkbox-card flex items-center gap-3 primary-bg_color rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700 flex-1 min-w-[240px]">
+                <input type="checkbox" [(ngModel)]="quote.needsHosting" />
+                <div>
+                  <span class="font-medium block">Hosting Setup</span>
+                  <span class="text-gray-500 text-sm">I need help setting up web hosting</span>
+                </div>
+              </label>
+              <label
+                class="checkbox-card flex items-center gap-3 primary-bg_color rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700 flex-1 min-w-[240px]">
+                <input type="checkbox" [(ngModel)]="quote.needsDomain" />
+                <div>
+                  <span class="font-medium block">Domain Registration</span>
+                  <span class="text-gray-500 text-sm">I need a domain name registered</span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEB STEP 3: Service Types -->
+        <div *ngIf="quote.category === 'web' && currentStep === 3" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">What <span class="primary-color">services</span> do you need?</h2>
+            <p class="text-gray-500">Select one or more — you can combine services.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div *ngFor="let svc of webServiceTypes" (click)="toggleServiceType(svc.value)"
+              [ngClass]="isServiceTypeSelected(svc.value) ? 'selected' : ''"
+              class="option-card primary-bg_color rounded-xl p-5 flex items-start gap-4 border border-gray-200 dark:border-gray-700">
+              <div class="mt-0.5">
+                <span *ngIf="isServiceTypeSelected(svc.value)"
+                  class="material-symbols-outlined primary-color">check_circle</span>
+                <span *ngIf="!isServiceTypeSelected(svc.value)"
+                  class="material-symbols-outlined text-gray-400">radio_button_unchecked</span>
+              </div>
+              <div>
+                <h4 class="font-bold mb-1">{{ svc.title }}</h4>
+                <p class="text-gray-500 text-sm">{{ svc.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEB STEP 4 (custom): Platform -->
+        <div *ngIf="quote.category === 'web' && isCustomWebProject && currentStep === 4" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">Choose your <span class="primary-color">platform</span></h2>
+            <p class="text-gray-500">Which builder or CMS would you like to use?</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let plat of platforms" (click)="selectPlatform(plat.value)"
+              [ngClass]="quote.platform === plat.value ? 'selected' : ''"
+              class="option-card primary-bg_color rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+              <h4 class="font-bold mb-1">{{ plat.title }}</h4>
+              <p class="text-gray-500 text-sm">{{ plat.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEB: Project Details -->
+        <div *ngIf="quote.category === 'web' && currentStep === (isCustomWebProject ? 5 : 4)" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">Project <span class="primary-color">Details</span></h2>
+            <p class="text-gray-500">Tell me more about scope, pages, and timeline.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Number of Pages <span
+                  class="text-red-500">*</span></label>
+              <input type="number" min="1" max="500"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.numberOfPages" placeholder="e.g. 5" />
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Budget Range <span
+                  class="text-red-500">*</span></label>
+              <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.budget">
+                <option class="primary-bg_color" value="" disabled selected>Select budget</option>
+                <option class="primary-bg_color" *ngFor="let b of budgetOptions" [value]="b">{{ b }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Timeline <span
+                  class="text-red-500">*</span></label>
+              <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.deadline">
+                <option class="primary-bg_color" value="" disabled selected>Select timeline</option>
+                <option class="primary-bg_color" *ngFor="let d of deadlineOptions" [value]="d">{{ d }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Reference Links (optional)</label>
+              <input type="text"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.references" placeholder="Inspiration sites or competitors" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Project Description <span
+                  class="text-red-500">*</span></label>
+              <textarea
+                class="w-full px-4 py-3 h-32 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent resize-y"
+                [(ngModel)]="quote.description"
+                placeholder="Describe features, goals, and any specific requirements..."></textarea>
+            </div>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-2 justify-center text-sm">
+            <span class="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 primary-color font-medium">
+              {{ getProjectTypeLabel(quote.projectType) }}
+            </span>
+            <span *ngIf="quote.needsHosting"
+              class="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 primary-color font-medium">+ Hosting</span>
+            <span *ngIf="quote.needsDomain"
+              class="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 primary-color font-medium">+ Domain</span>
+            <span *ngFor="let s of quote.serviceTypes"
+              class="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 primary-color font-medium">
+              {{ getServiceTypeLabel(s) }}
+            </span>
+            <span *ngIf="quote.platform"
+              class="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 primary-color font-medium">
+              {{ getPlatformLabel(quote.platform) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- GRAPHIC STEP 2 -->
+        <div *ngIf="quote.category === 'graphic' && currentStep === 2" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">What do you need <span class="primary-color">designed</span>?</h2>
+            <p class="text-gray-500">Pick the design service that fits your project.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let type of graphicTypes" (click)="selectProjectType(type.value)"
+              [ngClass]="quote.projectType === type.value ? 'selected' : ''"
+              class="option-card primary-bg_color rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+              <h4 class="font-bold mb-1">{{ type.title }}</h4>
+              <p class="text-gray-500 text-sm">{{ type.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIDEO STEP 2 -->
+        <div *ngIf="quote.category === 'video' && currentStep === 2" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">What type of <span class="primary-color">video</span>?</h2>
+            <p class="text-gray-500">Select the video editing service you need.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let type of videoTypes" (click)="selectProjectType(type.value)"
+              [ngClass]="quote.projectType === type.value ? 'selected' : ''"
+              class="option-card primary-bg_color rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+              <h4 class="font-bold mb-1">{{ type.title }}</h4>
+              <p class="text-gray-500 text-sm">{{ type.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRAPHIC / VIDEO: Project Details -->
+        <div *ngIf="(quote.category === 'graphic' || quote.category === 'video') && currentStep === 3"
+          class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">Project <span class="primary-color">Details</span></h2>
+            <p class="text-gray-500">Share your vision, budget, and timeline.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Budget Range <span
+                  class="text-red-500">*</span></label>
+              <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.budget">
+                <option class="primary-bg_color" value="" disabled selected>Select budget</option>
+                <option class="primary-bg_color" *ngFor="let b of budgetOptions" [value]="b">{{ b }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Timeline <span
+                  class="text-red-500">*</span></label>
+              <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.deadline">
+                <option class="primary-bg_color" value="" disabled selected>Select timeline</option>
+                <option class="primary-bg_color" *ngFor="let d of deadlineOptions" [value]="d">{{ d }}</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Reference Links (optional)</label>
+              <input type="text"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.references" placeholder="Style references or examples you like" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Project Description <span
+                  class="text-red-500">*</span></label>
+              <textarea
+                class="w-full px-4 py-3 h-32 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent resize-y"
+                [(ngModel)]="quote.description"
+                placeholder="Describe what you need, style preferences, deliverables..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINAL STEP: User Details -->
+        <div *ngIf="isLastStep && currentStep > 1" class="step-fade">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-2">Your <span class="primary-color">Contact Details</span></h2>
+            <p class="text-gray-500">How should I reach you with your quote?</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Full Name <span
+                  class="text-red-500">*</span></label>
+              <input type="text"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.name" placeholder="John Doe" />
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Email <span
+                  class="text-red-500">*</span></label>
+              <input type="email"
+                class="w-full px-4 py-3 border rounded-lg bg-transparent transition-colors"
+                [ngClass]="liveEmailError ? 'border-red-500 dark:border-red-500' : emailLooksValid ? 'border-green-500 dark:border-green-600' : 'border-gray-300 dark:border-gray-700'"
+                [(ngModel)]="quote.email" (input)="onEmailInput()" placeholder="you@gmail.com" />
+              <p *ngIf="liveEmailError" class="text-xs text-red-500 mt-1">{{ liveEmailError }}</p>
+              <p *ngIf="!liveEmailError && !emailLooksValid" class="text-xs text-gray-500 mt-1">Gmail, Hotmail, or your business domain only.</p>
+              <p *ngIf="emailLooksValid" class="text-xs text-green-600 dark:text-green-400 mt-1">Email looks good.</p>
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Phone <span
+                  class="text-red-500">*</span></label>
+              <input type="tel"
+                class="w-full px-4 py-3 border rounded-lg bg-transparent transition-colors"
+                [ngClass]="livePhoneError ? 'border-red-500 dark:border-red-500' : phoneLooksValid ? 'border-green-500 dark:border-green-600' : 'border-gray-300 dark:border-gray-700'"
+                [(ngModel)]="quote.phone" (input)="onPhoneInput()" placeholder="+92 300 1234567" />
+              <p *ngIf="livePhoneError" class="text-xs text-red-500 mt-1">{{ livePhoneError }}</p>
+              <p *ngIf="!livePhoneError && !phoneLooksValid" class="text-xs text-gray-500 mt-1">10–15 digits; +, spaces, and dashes allowed.</p>
+              <p *ngIf="phoneLooksValid" class="text-xs text-green-600 dark:text-green-400 mt-1">Phone number looks good.</p>
+            </div>
+            <div>
+              <label class="text-sm font-semibold text-gray-500 mb-2 block">Preferred Contact Method</label>
+              <select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent"
+                [(ngModel)]="quote.contactMethod">
+                <option class="primary-bg_color" *ngFor="let m of contactMethods" [value]="m">{{ m }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div
+            class="mt-8 max-w-3xl mx-auto rounded-xl p-6 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+            <h4 class="font-bold mb-3 primary-color">Quote Summary</h4>
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              <div>
+                <dt class="text-gray-500">Service</dt>
+                <dd class="font-medium capitalize">{{ quote.category }}</dd>
+              </div>
+              <div *ngIf="quote.projectType">
+                <dt class="text-gray-500">Type</dt>
+                <dd class="font-medium">{{ getProjectTypeLabel(quote.projectType) }}</dd>
+              </div>
+              <div *ngIf="quote.category === 'web' && quote.numberOfPages">
+                <dt class="text-gray-500">Pages</dt>
+                <dd class="font-medium">{{ quote.numberOfPages }}</dd>
+              </div>
+              <div *ngIf="quote.budget">
+                <dt class="text-gray-500">Budget</dt>
+                <dd class="font-medium">{{ quote.budget }}</dd>
+              </div>
+              <div *ngIf="quote.deadline">
+                <dt class="text-gray-500">Timeline</dt>
+                <dd class="font-medium">{{ quote.deadline }}</dd>
+              </div>
+              <div *ngIf="quote.category === 'web' && quote.serviceTypes.length">
+                <dt class="text-gray-500">Services</dt>
+                <dd class="font-medium">{{ getServiceTypesSummary() }}</dd>
+              </div>
+              <div *ngIf="quote.platform">
+                <dt class="text-gray-500">Platform</dt>
+                <dd class="font-medium">{{ getPlatformLabel(quote.platform) }}</dd>
+              </div>
+              <div *ngIf="quote.needsHosting || quote.needsDomain">
+                <dt class="text-gray-500">Extras</dt>
+                <dd class="font-medium">
+                  <span *ngIf="quote.needsHosting">Hosting</span>
+                  <span *ngIf="quote.needsHosting && quote.needsDomain">, </span>
+                  <span *ngIf="quote.needsDomain">Domain</span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="mt-10 flex flex-row justify-between items-center gap-4">
+          <button *ngIf="currentStep > 1" (click)="prevStep()"
+            class="px-8 py-3 rounded-lg border border-gray-300 dark:border-gray-600 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+            Back
+          </button>
+          <div *ngIf="currentStep === 1" class="hidden sm:block"></div>
+
+          <button (click)="nextStep()" [disabled]="isSubmitting"
+            class="px-10 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+            <span *ngIf="isSubmitting" class="material-symbols-outlined text-lg animate-spin">progress_activity</span>
+            <span *ngIf="!isLastStep && !isSubmitting">Continue</span>
+            <span *ngIf="isLastStep && !isSubmitting">Submit Quote</span>
+            <span *ngIf="isSubmitting">Submitting...</span>
+            <span *ngIf="!isLastStep && !isSubmitting" class="material-symbols-outlined text-lg">arrow_forward</span>
+            <span *ngIf="isLastStep && !isSubmitting" class="material-symbols-outlined text-lg">send</span>
+          </button>
+        </div>
+
+      </div>
+    </ng-container>
+  </div>
+</section>

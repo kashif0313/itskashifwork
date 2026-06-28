@@ -1,39 +1,64 @@
-<div class="fixed inset-0  backdrop-blur-sm flex items-center justify-center z-50">
+<div
+  class="modal-overlay fixed inset-0 flex items-center justify-center z-50 p-4"
+  (click)="closeModal()"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="projectDetails?.title + ' details'">
+
+  <div
+    class="modal-glass p-6 sm:p-8 rounded-2xl max-w-lg w-full relative text-center"
+    (click)="$event.stopPropagation()">
+
+    <button
+      type="button"
+      class="modal-close-btn absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center text-xl font-bold leading-none transition-colors"
+      (click)="closeModal()"
+      aria-label="Close project details">
+      &times;
+    </button>
+
+    <div class="modal-image-wrap rounded-xl mb-5 overflow-hidden">
+      <img
+        [src]="projectDetails.imageUrl"
+        [alt]="projectDetails.title"
+        class="w-full h-52 object-contain" />
+    </div>
+
+    <h2 class="modal-title text-2xl font-bold mb-3 pr-8">
+      {{ projectDetails.title }}
+    </h2>
+
+    <p class="modal-description mb-5 text-sm leading-relaxed text-left">
+      {{ projectDetails.description }}
+    </p>
 
     <div
-        class="bg-white/80 dark:bg-gray-500/80 p-6 rounded-2xl max-w-lg w-full mx-10 relative shadow-lg text-center backdrop-blur-md">
-
-
-        <button class="absolute top-3 right-4 text-gray-600 dark:text-gray-300 text-2xl font-bold hover:text-gray-400"
-            (click)="closeModal()">
-            &times;
-        </button>
-
-
-        <img [src]="projectDetails.imageUrl" alt="Project Image" class="w-full h-52 object-contain rounded-xl mb-4">
-
-
-        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2">{{ projectDetails.title }}</h2>
-
-
-        <p class="text-gray-600 dark:text-gray-300 mb-5 text-sm">
-            {{ projectDetails.description }}
-        </p>
-
-        <div class="flex flex-wrap gap-2 text-white mb-3" *ngIf="(projectDetails?.techStack ?? []).length > 0">
-
-            Tech Stack :
-            <span *ngFor="let tech of projectDetails.techStack" class="inline-block px-3 py-1 mb-2 rounded-full text-xs font-semibold
-        bg-blue-600/20 primary-badge-text_color border-blue-600/30">
-                {{ tech }}
-            </span>
-        </div>
-        <div class="flex justify-center gap-4">
-            <app-button *ngIf="projectDetails.webLink" [secondaryBtn]="true"
-                (click)="openPreviewLink(projectDetails.webLink)">View Project</app-button>
-            <app-button *ngIf="projectDetails.githubLink" [secondaryBtn]="true"
-                (click)="openGithubLink(projectDetails.githubLink)"><fa-icon [icon]="faGithub"
-                    class="w-10 h-10"></fa-icon> View Code</app-button>
-        </div>
+      class="flex flex-wrap items-center gap-2 mb-5 text-left"
+      *ngIf="(projectDetails?.techStack ?? []).length > 0">
+      <span class="modal-label text-sm font-semibold shrink-0">
+        Tech Stack:
+      </span>
+      <span
+        *ngFor="let tech of projectDetails.techStack"
+        class="tech-badge inline-block px-3 py-1 rounded-full text-xs font-semibold">
+        {{ tech }}
+      </span>
     </div>
+
+    <div class="flex flex-wrap justify-center gap-4">
+      <app-button
+        *ngIf="projectDetails.webLink"
+        [secondaryBtn]="true"
+        (click)="openPreviewLink(projectDetails.webLink)">
+        View Project
+      </app-button>
+      <app-button
+        *ngIf="projectDetails.githubLink"
+        [secondaryBtn]="true"
+        (click)="openGithubLink(projectDetails.githubLink)">
+        <fa-icon [icon]="faGithub" class="w-10 h-10"></fa-icon>
+        View Code
+      </app-button>
+    </div>
+  </div>
 </div>

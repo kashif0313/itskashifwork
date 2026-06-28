@@ -1,5 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { Component, inject, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import emailjs, { type EmailJSResponseStatus } from '@emailjs/browser';
+
+export interface QuoteForm {
+  category: 'web' | 'graphic' | 'video' | null;
+  projectType: string;
+  needsHosting: boolean;
+  needsDomain: boolean;
+  serviceTypes: string[];
+  platform: string;
+  numberOfPages: number | null;
+  description: string;
+  budget: string;
+  deadline: string;
+  references: string;
+  name: string;
+  email: string;
+  phone: string;
+  contactMethod: string;
+}
 
 @Component({
   selector: 'app-quote',
@@ -7,189 +27,592 @@ import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./quote.component.css'],
   standalone: false,
 })
-export class QuoteComponent {
-  currentStep = 1; // Start at step 1
-  totalSteps = 7;
-  enableStep2 = false;
-  enableStep3 = false;
-  enableStep4 = false;
+export class QuoteComponent implements OnDestroy {
+  private router = inject(Router);
+  private redirectTimer: ReturnType<typeof setInterval> | null = null;
 
-  services = [
+  toastMixin = Swal.mixin({
+    toast: true,
+    icon: 'success',
+    title: 'General Title',
+    timerProgressBar: true,
+    animation: true,
+    position: 'top',
+    showConfirmButton: false,
+    timer: 3000,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+  });
+
+  currentStep = 1;
+  isSubmitting = false;
+  showSuccessPage = false;
+  redirectCountdown = 5;
+  stepError = '';
+  liveEmailError = '';
+  livePhoneError = '';
+  emailLooksValid = false;
+  phoneLooksValid = false;
+  private emailDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private phoneDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly liveValidationDelayMs = 400;
+
+  quote: QuoteForm = this.emptyQuote();
+
+  categories = [
     {
-      id: 1,
-      value: 'web',
+      value: 'web' as const,
       title: 'Web Development',
-      description: 'Modern, responsive websites & apps.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
+      description: 'Modern, responsive websites & web applications.',
+      icon: 'icons/web-programming.png',
     },
     {
-      id: 2,
-      value: 'graphic',
+      value: 'graphic' as const,
       title: 'Graphic Design',
-      description: 'Logos, branding & visual assets.',
-      icon: `M512.5 74.3L291.1 222C262 241.4 243.5 272.9 240.5 307.3C302.8 320.1 351.9 369.2 364.8 431.6C399.3 428.6 430.7 410.1 450.1 381L597.7 159.5C604.4 149.4 608 137.6 608 125.4C608 91.5 580.5 64 546.6 64C534.5 64 522.6 67.6 512.5 74.3zM320 464C320 402.1 269.9 352 208 352C146.1 352 96 402.1 96 464C96 467.9 96.2 471.8 96.6 475.6C98.4 493.1 86.4 512 68.8 512L64 512C46.3 512 32 526.3 32 544C32 561.7 46.3 576 64 576L208 576C269.9 576 320 525.9 320 464z`,
+      description: 'Logos, branding & stunning visual assets.',
+      icon: 'icons/curve.png',
     },
     {
-      id: 3,
-      value: 'video',
+      value: 'video' as const,
       title: 'Video Editing',
-      description: 'Professional post-production & FX.',
-      icon: `M512 128C514 128 515.9 128.1 517.8 128.3L422.1 224L490 224L562 152C570.8 163 576 176.9 576 192L576 448C576 483.3 547.3 512 512 512L128 512C92.7 512 64 483.3 64 448L64 192C64 156.7 92.7 128 128 128L198.1 128L102.1 224L170 224L265 129L266 128L358.1 128L262.1 224L330 224L425 129L426 128L512.1 128z`,
+      description: 'Professional post-production & motion graphics.',
+      icon: 'icons/video-camera.png',
     },
   ];
-  webServicesArray = [
-    {
-      id: 1,
-      title: 'Full Website Development',
-      tag: 'custom',
-      description:
-        'End-to-end web solutions including UI/UX, Frontend, and Backend systems.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-      tech: [
-        {
-          id: 1,
-          title: 'angular',
-        },
-        {
-          id: 2,
-          title: 'laravel',
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: 'Backend Development',
-      tag: 'custom',
-      description:
-        'Scalable server architecture, database management, and business logic.',
-      icon: `M544 269.8C529.2 279.6 512.2 287.5 494.5 293.8C447.5 310.6 385.8 320 320 320C254.2 320 192.4 310.5 145.5 293.8C127.9 287.5 110.8 279.6 96 269.8L96 352C96 396.2 196.3 432 320 432C443.7 432 544 396.2 544 352L544 269.8zM544 192L544 144C544 99.8 443.7 64 320 64C196.3 64 96 99.8 96 144L96 192C96 236.2 196.3 272 320 272C443.7 272 544 236.2 544 192zM494.5 453.8C447.6 470.5 385.9 480 320 480C254.1 480 192.4 470.5 145.5 453.8C127.9 447.5 110.8 439.6 96 429.8L96 496C96 540.2 196.3 576 320 576C443.7 576 544 540.2 544 496L544 429.8C529.2 439.6 512.2 447.5 494.5 453.8z`,
-    },
-    {
-      id: 3,
-      title: 'Frontend Development',
-      tag: 'custom',
-      description:
-        'Interactive UI/UX implementation and high-performance client-side development.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 4,
-      title: 'API for App Side',
-      tag: 'custom',
-      description:
-        'Robust REST or GraphQL endpoints designed for mobile and external integrations.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 5,
-      title: 'Bug Fixes & Optimization',
-      description:
-        'Technical debt reduction, performance tuning, and stability improvements.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 6,
-      title: 'Build from scratch',
-      description:
-        'Technical debt reduction, performance tuning, and stability improvements.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-  ];
-  webBuilderServices = [
-    {
-      id: 1,
-      title: 'Wordpress',
-      description:
-        'End-to-end web solutions including UI/UX, Frontend, and Backend systems.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 2,
-      title: 'Shopify',
-      description:
-        'End-to-end web solutions including UI/UX, Frontend, and Backend systems.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 3,
-      title: 'System.io',
-      description:
-        'End-to-end web solutions including UI/UX, Frontend, and Backend systems.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 4,
-      title: 'Custom',
-      description:
-        'End-to-end web solutions including UI/UX, Frontend, and Backend systems.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-  ];
-  webTechnologies = [
-    {
-      id: 1,
-      title: 'React',
-      description: 'Modern component-based frontend library by Meta.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 2,
-      title: 'Angular',
-      description: 'Comprehensive enterprise-grade frontend framework.',
-      icon: `M544 269.8C529.2 279.6 512.2 287.5 494.5 293.8C447.5 310.6 385.8 320 320 320C254.2 320 192.4 310.5 145.5 293.8C127.9 287.5 110.8 279.6 96 269.8L96 352C96 396.2 196.3 432 320 432C443.7 432 544 396.2 544 352L544 269.8zM544 192L544 144C544 99.8 443.7 64 320 64C196.3 64 96 99.8 96 144L96 192C96 236.2 196.3 272 320 272C443.7 272 544 236.2 544 192zM494.5 453.8C447.6 470.5 385.9 480 320 480C254.1 480 192.4 470.5 145.5 453.8C127.9 447.5 110.8 439.6 96 429.8L96 496C96 540.2 196.3 576 320 576C443.7 576 544 540.2 544 496L544 429.8C529.2 439.6 512.2 447.5 494.5 453.8z`,
-    },
-    {
-      id: 3,
-      title: 'Node.js',
-      description:
-        'Interactive UI/UX implementation and high-performance client-side development.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 4,
-      title: 'API for App Side',
-      description:
-        'Robust REST or GraphQL endpoints designed for mobile and external integrations.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 5,
-      title: 'Bug Fixes & Optimization',
-      description:
-        'Technical debt reduction, performance tuning, and stability improvements.',
-      icon: `M392.8 65.2C375.8 60.3 358.1 70.2 353.2 87.2L225.2 535.2C220.3 552.2 230.2 569.9 247.2 574.8C264.2 579.7 281.9 569.8 286.8 552.8L414.8 104.8C419.7 87.8 409.8 70.1 392.8 65.2zM457.4 201.3C444.9 213.8 444.9 234.1 457.4 246.6L530.8 320L457.4 393.4C444.9 405.9 444.9 426.2 457.4 438.7C469.9 451.2 490.2 451.2 502.7 438.7L598.7 342.7C611.2 330.2 611.2 309.9 598.7 297.4L502.7 201.4C490.2 188.9 469.9 188.9 457.4 201.4zM182.7 201.3C170.2 188.8 149.9 188.8 137.4 201.3L41.4 297.3C28.9 309.8 28.9 330.1 41.4 342.6L137.4 438.6C149.9 451.1 170.2 451.1 182.7 438.6C195.2 426.1 195.2 405.8 182.7 393.3L109.3 320L182.6 246.6C195.1 234.1 195.1 213.8 182.6 201.3z`,
-    },
-    {
-      id: 6,
-      title: "I'm not sure",
-      description:
-        'I need expert advice on the best tech stack for my project.',
-      icon: `M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM320 240C302.3 240 288 254.3 288 272C288 285.3 277.3 296 264 296C250.7 296 240 285.3 240 272C240 227.8 275.8 192 320 192C364.2 192 400 227.8 400 272C400 319.2 364 339.2 344 346.5L344 350.3C344 363.6 333.3 374.3 320 374.3C306.7 374.3 296 363.6 296 350.3L296 342.2C296 321.7 310.8 307 326.1 302C332.5 299.9 339.3 296.5 344.3 291.7C348.6 287.5 352 281.7 352 272.1C352 254.4 337.7 240.1 320 240.1zM288 432C288 414.3 302.3 400 320 400C337.7 400 352 414.3 352 432C352 449.7 337.7 464 320 464C302.3 464 288 449.7 288 432z`,
-    },
-  ];
-  webServices = this.webServicesArray;
-  projectQuotation: any = {
-    description: '',
-    budget: '',
-    deadline: '',
-    references: '',
-    name: '',
-    email: '',
-    phone: '',
-    contactMethod: '',
-    service: '',
-    webBuilderService: '',
-    webService: '',
-  };
 
-  WebServiceType: string = '';
-  selectedService: string | null = null;
+  webProjectTypes = [
+    { value: 'crm', title: 'CRM', description: 'Customer relationship management systems.' },
+    { value: 'ecommerce', title: 'E-Commerce', description: 'Online stores & payment integrations.' },
+    { value: 'portfolio', title: 'Portfolio', description: 'Showcase your work professionally.' },
+    { value: 'landing', title: 'Landing Page', description: 'High-converting single-page sites.' },
+    { value: 'corporate', title: 'Corporate Website', description: 'Business presence & company info.' },
+    { value: 'webapp', title: 'Web Application', description: 'Custom interactive web apps.' },
+    { value: 'custom', title: 'Custom', description: 'Built with WordPress, Shopify & more.' },
+  ];
 
-  selectService(service: string) {
-    this.selectedService = service;
+  webServiceTypes = [
+    { value: 'frontend', title: 'Frontend Development', description: 'UI/UX implementation & client-side logic.' },
+    { value: 'backend', title: 'Backend Development', description: 'Server, database & business logic.' },
+    { value: 'fullstack', title: 'Full Stack', description: 'End-to-end frontend & backend delivery.' },
+    { value: 'api', title: 'API Development', description: 'REST/GraphQL APIs for apps & integrations.' },
+    { value: 'bugfixes', title: 'Bug Fixes & Optimization', description: 'Fix issues & improve performance.' },
+  ];
+
+  platforms = [
+    { value: 'wordpress', title: 'WordPress', description: 'Flexible CMS for blogs & business sites.' },
+    { value: 'shopify', title: 'Shopify', description: 'E-commerce store setup & customization.' },
+    { value: 'systemeio', title: 'Systeme.io', description: 'Funnels, email marketing & landing pages.' },
+    { value: 'wix', title: 'Wix', description: 'Drag-and-drop website builder.' },
+    { value: 'webflow', title: 'Webflow', description: 'Design-first no-code/low-code sites.' },
+    { value: 'other', title: 'Other', description: 'Another platform or custom stack.' },
+  ];
+
+  graphicTypes = [
+    { value: 'logo', title: 'Logo Design', description: 'Unique brand identity mark.' },
+    { value: 'branding', title: 'Branding Kit', description: 'Full visual identity package.' },
+    { value: 'social', title: 'Social Media Graphics', description: 'Posts, banners & ad creatives.' },
+    { value: 'print', title: 'Print Design', description: 'Flyers, brochures & business cards.' },
+    { value: 'ui', title: 'UI Design', description: 'App & website interface mockups.' },
+  ];
+
+  videoTypes = [
+    { value: 'promo', title: 'Promotional Video', description: 'Product or service promos.' },
+    { value: 'social', title: 'Social Media Reels', description: 'Short-form content for platforms.' },
+    { value: 'corporate', title: 'Corporate Video', description: 'Company profiles & presentations.' },
+    { value: 'youtube', title: 'YouTube Editing', description: 'Long-form content editing.' },
+    { value: 'motion', title: 'Motion Graphics', description: 'Animated visuals & effects.' },
+  ];
+
+  budgetOptions = ['Under Rs 500', 'Rs 500 – Rs 1,000', 'Rs 1,000 – Rs 3,000', 'Rs 3,000 – Rs 5,000', 'Rs 5,000+', 'Not sure yet'];
+  deadlineOptions = ['ASAP (1–2 days)','1–2 weeks', '1 Month', '2–3 Months', '3+ Months', 'Flexible'];
+  contactMethods = ['Email', 'Phone', 'WhatsApp', 'Any'];
+
+  get totalSteps(): number {
+    if (this.quote.category === 'web') {
+      return this.isCustomWebProject ? 6 : 5;
+    }
+    if (this.quote.category === 'graphic' || this.quote.category === 'video') {
+      return 4;
+    }
+    return 1;
   }
 
-  continueStep() {
-    console.log('Selected Service:', this.selectedService);
+  get isCustomWebProject(): boolean {
+    return this.quote.projectType === 'custom';
+  }
+
+  get progressPercent(): number {
+    return (this.currentStep / this.totalSteps) * 100;
+  }
+
+  get stepTitle(): string {
+    const titles: Record<string, string[]> = {
+      web: this.isCustomWebProject
+        ? ['Service Selection', 'Project Type', 'Service Scope', 'Platform', 'Project Details', 'Your Details']
+        : ['Service Selection', 'Project Type', 'Service Scope', 'Project Details', 'Your Details'],
+      graphic: ['Service Selection', 'Design Type', 'Project Details', 'Your Details'],
+      video: ['Service Selection', 'Video Type', 'Project Details', 'Your Details'],
+    };
+    const list = this.quote.category ? titles[this.quote.category] : ['Service Selection'];
+    return list[this.currentStep - 1] ?? 'Quote';
+  }
+
+  get isLastStep(): boolean {
+    return this.currentStep === this.totalSteps;
+  }
+
+  private emptyQuote(): QuoteForm {
+    return {
+      category: null,
+      projectType: '',
+      needsHosting: false,
+      needsDomain: false,
+      serviceTypes: [],
+      platform: '',
+      numberOfPages: null,
+      description: '',
+      budget: '',
+      deadline: '',
+      references: '',
+      name: '',
+      email: '',
+      phone: '',
+      contactMethod: 'Email',
+    };
+  }
+
+  selectCategory(category: 'web' | 'graphic' | 'video') {
+    if (this.quote.category !== category) {
+      const saved = { name: this.quote.name, email: this.quote.email, phone: this.quote.phone, contactMethod: this.quote.contactMethod };
+      this.quote = { ...this.emptyQuote(), ...saved, category };
+    }
+    this.stepError = '';
+  }
+
+  selectProjectType(type: string) {
+    this.quote.projectType = type;
+    if (type !== 'custom') {
+      this.quote.platform = '';
+    }
+    this.stepError = '';
+  }
+
+  selectPlatform(platform: string) {
+    this.quote.platform = platform;
+    this.stepError = '';
+  }
+
+  toggleServiceType(value: string) {
+    const idx = this.quote.serviceTypes.indexOf(value);
+    if (idx > -1) {
+      this.quote.serviceTypes = this.quote.serviceTypes.filter((s) => s !== value);
+    } else {
+      this.quote.serviceTypes = [...this.quote.serviceTypes, value];
+    }
+    this.stepError = '';
+  }
+
+  isServiceTypeSelected(value: string): boolean {
+    return this.quote.serviceTypes.includes(value);
+  }
+
+  canContinue(): boolean {
+    this.stepError = '';
+    if (this.currentStep === 1) {
+      return !!this.quote.category;
+    }
+
+    if (this.quote.category === 'web') {
+      if (this.currentStep === 2) return !!this.quote.projectType;
+      if (this.currentStep === 3) return this.quote.serviceTypes.length > 0;
+      if (this.isCustomWebProject && this.currentStep === 4) return !!this.quote.platform;
+      const detailsStep = this.isCustomWebProject ? 5 : 4;
+      if (this.currentStep === detailsStep) {
+        return (
+          this.quote.numberOfPages !== null &&
+          this.quote.numberOfPages > 0 &&
+          !!this.quote.description.trim() &&
+          !!this.quote.budget &&
+          !!this.quote.deadline
+        );
+      }
+      if (this.isLastStep) return this.isUserDetailsValid();
+    }
+
+    if (this.quote.category === 'graphic' || this.quote.category === 'video') {
+      if (this.currentStep === 2) return !!this.quote.projectType;
+      if (this.currentStep === 3) {
+        return !!this.quote.description.trim() && !!this.quote.budget && !!this.quote.deadline;
+      }
+      if (this.isLastStep) return this.isUserDetailsValid();
+    }
+
+    return false;
+  }
+
+  private readonly blockedEmailDomains = new Set([
+    'yopmail.com',
+    'example.com',
+    'test.com',
+  ]);
+
+  private readonly allowedProviderDomains = new Set([
+    'gmail.com',
+    'googlemail.com',
+    'hotmail.com',
+    'hotmail.co.uk',
+    'outlook.com',
+    'outlook.co.uk',
+    'live.com',
+    'live.co.uk',
+  ]);
+
+  private isEmailValid(email: string): boolean {
+    return this.getEmailValidationMessage(email) === null;
+  }
+
+  private getEmailValidationMessage(email: string): string | null {
+    const trimmed = email.trim();
+    if (!trimmed) return 'Please enter your email.';
+
+    const normalized = trimmed.toLowerCase();
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(normalized)) {
+      return 'Please enter a valid email address.';
+    }
+
+    const domain = normalized.split('@')[1];
+    if (this.blockedEmailDomains.has(domain)) {
+      return 'Disposable or test email domains are not allowed.';
+    }
+
+    if (this.allowedProviderDomains.has(domain)) return null;
+
+    const domainPattern = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/;
+    const tld = domain.split('.').pop() ?? '';
+    if (!domainPattern.test(domain) || tld.length < 2) {
+      return 'Please use Gmail, Hotmail, or a valid custom domain email.';
+    }
+
+    return null;
+  }
+
+  private isPhoneValid(phone: string): boolean {
+    return this.getPhoneValidationMessage(phone) === null;
+  }
+
+  private getPhoneValidationMessage(phone: string): string | null {
+    const trimmed = phone.trim();
+    if (!trimmed) return 'Please enter your phone number.';
+
+    if (!/^\+?[\d\s\-().]+$/.test(trimmed)) {
+      return 'Phone number can only contain digits, spaces, +, -, ( ).';
+    }
+
+    const digits = trimmed.replace(/\D/g, '');
+    if (digits.length < 10) {
+      return 'Phone number must have at least 10 digits.';
+    }
+    if (digits.length > 15) {
+      return 'Phone number must not exceed 15 digits.';
+    }
+
+    return null;
+  }
+
+  private isUserDetailsValid(): boolean {
+    return (
+      !!this.quote.name.trim() &&
+      this.isEmailValid(this.quote.email) &&
+      this.isPhoneValid(this.quote.phone) &&
+      !!this.quote.contactMethod
+    );
+  }
+
+  onEmailInput() {
+    this.emailLooksValid = false;
+    this.liveEmailError = '';
+    if (this.emailDebounceTimer) clearTimeout(this.emailDebounceTimer);
+    this.emailDebounceTimer = setTimeout(() => {
+      this.validateEmailLive();
+      this.emailDebounceTimer = null;
+    }, this.liveValidationDelayMs);
+  }
+
+  onPhoneInput() {
+    this.phoneLooksValid = false;
+    this.livePhoneError = '';
+    if (this.phoneDebounceTimer) clearTimeout(this.phoneDebounceTimer);
+    this.phoneDebounceTimer = setTimeout(() => {
+      this.validatePhoneLive();
+      this.phoneDebounceTimer = null;
+    }, this.liveValidationDelayMs);
+  }
+
+  private validateEmailLive(force = false) {
+    const trimmed = this.quote.email.trim();
+    if (!trimmed) {
+      this.liveEmailError = force ? 'Please enter your email.' : '';
+      this.emailLooksValid = false;
+      return;
+    }
+
+    const error = this.getEmailValidationMessage(this.quote.email);
+    this.liveEmailError = error ?? '';
+    this.emailLooksValid = error === null;
+  }
+
+  private validatePhoneLive(force = false) {
+    const trimmed = this.quote.phone.trim();
+    if (!trimmed) {
+      this.livePhoneError = force ? 'Please enter your phone number.' : '';
+      this.phoneLooksValid = false;
+      return;
+    }
+
+    const error = this.getPhoneValidationMessage(this.quote.phone);
+    this.livePhoneError = error ?? '';
+    this.phoneLooksValid = error === null;
+  }
+
+  private clearLiveFieldValidation() {
+    this.liveEmailError = '';
+    this.livePhoneError = '';
+    this.emailLooksValid = false;
+    this.phoneLooksValid = false;
+    this.clearLiveValidationTimers();
+  }
+
+  private clearLiveValidationTimers() {
+    if (this.emailDebounceTimer) {
+      clearTimeout(this.emailDebounceTimer);
+      this.emailDebounceTimer = null;
+    }
+    if (this.phoneDebounceTimer) {
+      clearTimeout(this.phoneDebounceTimer);
+      this.phoneDebounceTimer = null;
+    }
+  }
+
+  nextStep() {
+    if (!this.canContinue()) {
+      if (this.isLastStep) {
+        this.validateEmailLive(true);
+        this.validatePhoneLive(true);
+      }
+      this.stepError = this.getValidationMessage();
+      return;
+    }
+    if (this.isLastStep) {
+      this.submitQuote();
+      return;
+    }
+    this.currentStep++;
+    this.stepError = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  prevStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+      this.stepError = '';
+      if (!this.isLastStep) {
+        this.clearLiveFieldValidation();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  private getValidationMessage(): string {
+    if (this.currentStep === 1) return 'Please select a service category.';
+    if (this.quote.category === 'web') {
+      if (this.currentStep === 2) return 'Please select a project type.';
+      if (this.currentStep === 3) return 'Please select at least one service type.';
+      if (this.isCustomWebProject && this.currentStep === 4) return 'Please select a platform.';
+      const detailsStep = this.isCustomWebProject ? 5 : 4;
+      if (this.currentStep === detailsStep) {
+        if (!this.quote.numberOfPages || this.quote.numberOfPages < 1) return 'Please enter the number of pages.';
+        if (!this.quote.description.trim()) return 'Please describe your project.';
+        if (!this.quote.budget) return 'Please select a budget range.';
+        if (!this.quote.deadline) return 'Please select a timeline.';
+      }
+    }
+    if (this.quote.category === 'graphic' || this.quote.category === 'video') {
+      if (this.currentStep === 2) return 'Please select a project type.';
+      if (this.currentStep === 3) {
+        if (!this.quote.description.trim()) return 'Please describe your project.';
+        if (!this.quote.budget) return 'Please select a budget range.';
+        if (!this.quote.deadline) return 'Please select a timeline.';
+      }
+    }
+    if (this.isLastStep) {
+      if (!this.quote.name.trim()) return 'Please enter your name.';
+      const emailError = this.getEmailValidationMessage(this.quote.email);
+      if (emailError) return emailError;
+      const phoneError = this.getPhoneValidationMessage(this.quote.phone);
+      if (phoneError) return phoneError;
+    }
+    return 'Please complete all required fields.';
+  }
+
+  submitQuote() {
+    if (!this.canContinue() || this.isSubmitting) return;
+
+    this.isSubmitting = true;
+    this.stepError = '';
+    this.showLoading('Sending Quote Request', 'Please wait while we send your quote request...');
+
+    emailjs
+      .send(
+        'service_b124c9s',
+        'template_2lkppdx',
+        {
+          user_name: this.quote.name,
+          user_email: this.quote.email,
+          message: this.buildEmailMessage(),
+        },
+        { publicKey: '3-fQaflqnq8rizVh-' }
+      )
+      .then(
+        () => {
+          Swal.close();
+          this.showSuccessPage = true;
+          this.startRedirectCountdown();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        (error) => {
+          Swal.close();
+          this.showWarn(
+            'Failed to submit Quote',
+            (error as EmailJSResponseStatus).text
+          );
+          this.stepError =
+            'Failed to submit your quote. Please try again or contact me directly.';
+        }
+      )
+      .finally(() => {
+        this.isSubmitting = false;
+      });
+  }
+
+  private buildEmailMessage(): string {
+    const q = this.quote;
+    const lines: string[] = ['--- Quote Request ---', ''];
+
+    lines.push(`Service Category: ${q.category ?? 'N/A'}`);
+
+    if (q.projectType) {
+      lines.push(`Project Type: ${this.getProjectTypeLabel(q.projectType)}`);
+    }
+
+    if (q.category === 'web') {
+      if (q.serviceTypes.length) {
+        lines.push(`Services: ${this.getServiceTypesSummary()}`);
+      }
+      if (q.platform) {
+        lines.push(`Platform: ${this.getPlatformLabel(q.platform)}`);
+      }
+      if (q.numberOfPages) {
+        lines.push(`Number of Pages: ${q.numberOfPages}`);
+      }
+      const extras: string[] = [];
+      if (q.needsHosting) extras.push('Hosting');
+      if (q.needsDomain) extras.push('Domain');
+      if (extras.length) {
+        lines.push(`Extras: ${extras.join(', ')}`);
+      }
+    }
+
+    if (q.budget) lines.push(`Budget: ${q.budget}`);
+    if (q.deadline) lines.push(`Timeline: ${q.deadline}`);
+    if (q.references) lines.push(`References: ${q.references}`);
+
+    if (q.description) {
+      lines.push('');
+      lines.push('Project Description:');
+      lines.push(q.description);
+    }
+
+    lines.push('');
+    lines.push(`Phone: ${q.phone}`);
+    lines.push(`Preferred Contact: ${q.contactMethod}`);
+
+    return lines.join('\n');
+  }
+
+  showLoading(modelTitle: string, modelText: string) {
+    Swal.fire({
+      title: modelTitle,
+      text: modelText,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+  }
+
+  showSuccess(modelTitle: string) {
+    this.toastMixin.fire({
+      title: modelTitle,
+      icon: 'success',
+    });
+  }
+
+  showWarn(modelTitle: string, message?: string) {
+    this.toastMixin.fire({
+      title: modelTitle,
+      text: message,
+      icon: 'error',
+    });
+  }
+
+  private startRedirectCountdown() {
+    this.redirectCountdown = 5;
+    this.redirectTimer = setInterval(() => {
+      this.redirectCountdown--;
+      if (this.redirectCountdown <= 0) {
+        this.goHome();
+      }
+    }, 1000);
+  }
+
+  goHome() {
+    this.clearRedirectTimer();
+    this.clearLiveFieldValidation();
+    this.quote = this.emptyQuote();
+    this.currentStep = 1;
+    this.showSuccessPage = false;
+    this.router.navigate(['/home']);
+  }
+
+  private clearRedirectTimer() {
+    if (this.redirectTimer) {
+      clearInterval(this.redirectTimer);
+      this.redirectTimer = null;
+    }
+  }
+
+  ngOnDestroy() {
+    this.clearRedirectTimer();
+    this.clearLiveValidationTimers();
+  }
+
+  getProjectTypeLabel(value: string): string {
+    const all = [...this.webProjectTypes, ...this.graphicTypes, ...this.videoTypes];
+    return all.find((t) => t.value === value)?.title ?? value;
+  }
+
+  getServiceTypeLabel(value: string): string {
+    return this.webServiceTypes.find((s) => s.value === value)?.title ?? value;
+  }
+
+  getPlatformLabel(value: string): string {
+    return this.platforms.find((p) => p.value === value)?.title ?? value;
+  }
+
+  getServiceTypesSummary(): string {
+    return this.quote.serviceTypes.map((s) => this.getServiceTypeLabel(s)).join(', ');
   }
 }

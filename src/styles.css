@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Bind Tailwind's `dark:` variant to the `.dark` class toggled on <html>
+   instead of the OS `prefers-color-scheme`, so utilities follow the site theme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-bg-dark: #111827;
   --color-text-dark: #f9fafb;
@@ -19,11 +23,10 @@
   --primary-badge-text-dark: #ffffff;
 }
 
-:root {
-  color-scheme: light dark;
-}
-
 html {
+  /* Force native form controls (checkboxes, selects, spinners) to the light
+     theme so they follow the site toggle instead of the OS preference. */
+  color-scheme: light;
   background-color: var(--color-bg-light);
   color: var(--color-text-light);
 
@@ -31,6 +34,7 @@ html {
 }
 
 html.dark {
+  color-scheme: dark;
   background-color: var(--color-bg-dark);
   color: var(--color-text-dark);
 }

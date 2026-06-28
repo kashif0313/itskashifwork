@@ -1,0 +1,90 @@
+.option-card {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  border-color:#7c7c7c;
+}
+
+.option-card:hover {
+  border-color: var(--primary-border-light);
+}
+
+.dark .option-card:hover {
+  border-color: var(--primary-border-dark);
+}
+
+.option-card.selected {
+  border-color: var(--primary-border-dark);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+}
+
+.dark .option-card.selected {
+  border-color: var(--primary-border-dark);
+  box-shadow: 0 4px 14px rgba(90, 143, 251, 0.15);
+}
+
+.category-card {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.25s ease;
+  border-color:#7c7c7c;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-border-dark);
+}
+
+.dark .category-card:hover {
+  border-color: var(--primary-border-dark);
+}
+
+.category-card.selected {
+  border-color: var(--primary-border-dark);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+}
+
+.dark .category-card.selected {
+  border-color: var(--primary-border-dark);
+  box-shadow: 0 8px 24px rgba(90, 143, 251, 0.2);
+}
+
+.checkbox-card {
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-card input {
+  accent-color: #2563eb;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.step-fade {
+  animation: stepFadeIn 0.35s ease-out;
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-pulse {
+  animation: successPulse 2s ease-in-out infinite;
+}
+
+@keyframes successPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 16px rgba(37, 99, 235, 0);
+  }
+}
